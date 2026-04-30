@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G. Sarran — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --accent: #c8f060;
+    --accent2: #a8d040;
+    --text: #e8eaf0;
+    --muted: #4a5568;
+    --border: #1a1f2e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200, 240, 96, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200, 240, 96, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* GLOW */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200, 240, 96, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LANG SWITCHER */
+  .lang-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: flex-end;
+    padding: 1.2rem 2rem;
+    gap: 6px;
+  }
+
+  .lang-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .lang-btn:hover, .lang-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* MAIN */
+  main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+    text-align: center;
+  }
+
+  /* TAG */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(200, 240, 96, 0.3);
+    background: rgba(200, 240, 96, 0.05);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    animation: fadeIn 0.8s ease both;
+  }
+
+  .tag-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* NAME */
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  h1 .line1 { display: block; color: var(--text); }
+  h1 .line2 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200, 240, 96, 0.5);
+  }
+
+  /* TITLE */
+  .title {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-bottom: 3rem;
+    max-width: 500px;
+    line-height: 1.7;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .title strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 0 auto 3rem;
+    animation: fadeIn 0.8s 0.3s ease both;
+  }
+
+  /* COMING SOON BOX */
+  .coming-soon {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2.5rem 3rem;
+    max-width: 480px;
+    width: 100%;
+    animation: fadeUp 0.8s 0.4s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .coming-soon::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .cs-label {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .cs-text {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* PROJECTS PREVIEW */
+  .projects-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 1.5rem;
+    text-align: left;
+  }
+
+  .project-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .project-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .project-status {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid;
+  }
+
+  .status-soon {
+    color: var(--accent);
+    border-color: rgba(200, 240, 96, 0.3);
+    background: rgba(200, 240, 96, 0.05);
+  }
+
+  .status-live {
+    color: #60f0a0;
+    border-color: rgba(96, 240, 160, 0.3);
+    background: rgba(96, 240, 160, 0.05);
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  footer a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HIDDEN LANG CONTENT */
+  [data-lang] { display: none; }
+  [data-lang].active { display: block; }
+  .title[data-lang].active { display: block; }
+  .cs-text[data-lang].active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- LANG SWITCHER -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('ru')">RU</button>
+</div>
+
+<main>
+  <!-- TAG -->
+  <div class="tag">
+    <span class="tag-dot"></span>
+    <span data-lang="fr" class="active">Portfolio en construction</span>
+    <span data-lang="en">Portfolio under construction</span>
+    <span data-lang="ru">Портфолио в разработке</span>
+  </div>
+
+  <!-- NAME -->
+  <h1>
+    <span class="line1">G. Sarran</span>
+    <span class="line2">Portfolio</span>
+  </h1>
+
+  <!-- TITLE -->
+  <p class="title" data-lang="fr" style="display:block">
+    Spécialiste en <strong>Automatisation IA & Data Agritech</strong><br>
+    No-code · N8N · Make · Airtable · Python · Satellite Data
+  </p>
+  <p class="title" data-lang="en">
+    Specialist in <strong>AI Automation & Agritech Data</strong><br>
+    No-code · N8N · Make · Airtable · Python · Satellite Data
+  </p>
+  <p class="title" data-lang="ru">
+    Специалист по <strong>ИИ-автоматизации и агротех данным</strong><br>
+    No-code · N8N · Make · Airtable · Python · Спутниковые данные
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- COMING SOON BOX -->
+  <div class="coming-soon">
+    <span class="cs-label">
+      <span data-lang="fr" class="active">Projets à venir</span>
+      <span data-lang="en">Upcoming projects</span>
+      <span data-lang="ru">Предстоящие проекты</span>
+    </span>
+
+    <p class="cs-text" data-lang="fr" style="display:block">
+      Ce portfolio est en cours de construction. Les projets seront publiés progressivement.
+    </p>
+    <p class="cs-text" data-lang="en">
+      This portfolio is under construction. Projects will be published progressively.
+    </p>
+    <p class="cs-text" data-lang="ru">
+      Это портфолио находится в разработке. Проекты будут публиковаться постепенно.
+    </p>
+
+    <div class="projects-preview">
+      <div class="project-item">
+        <div class="project-icon">📓</div>
+        <span>Notebook phénologique blé/maïs · Luhansk</span>
+        <span class="project-status status-soon">
+          <span data-lang="fr" class="active">Bientôt</span>
+          <span data-lang="en">Soon</span>
+          <span data-lang="ru">Скоро</span>
+        </span>
+      </div>
+      <div class="project-item">
+        <div class="project-icon">🤖</div>
+        <span>Agents IA · Détection sécheresse N8N</span>
+        <span class="project-status status-soon">
+          <span data-lang="fr" class="active">Bientôt</span>
+          <span data-lang="en">Soon</span>
+          <span data-lang="ru">Скоро</span>
+        </span>
+      </div>
+      <div class="project-item">
+        <div class="project-icon">💧</div>
+        <span>Irrigation intelligente · N8N + Capteurs</span>
+        <span class="project-status status-soon">
+          <span data-lang="fr" class="active">Bientôt</span>
+          <span data-lang="en">Soon</span>
+          <span data-lang="ru">Скоро</span>
+        </span>
+      </div>
+      <div class="project-item">
+        <div class="project-icon">📊</div>
+        <span>Base Airtable Néobâti · Soutenance</span>
+        <span class="project-status status-live">Live</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="https://github.com/gsarran" target="_blank">GitHub</a>
+  &nbsp;·&nbsp;
+  <span data-lang="fr" class="active">© 2026 G. Sarran</span>
+  <span data-lang="en">© 2026 G. Sarran</span>
+  <span data-lang="ru">© 2026 Г. Сарран</span>
+</footer>
+
+<script>
+function setLang(lang) {
+  // Update buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+  // Update html lang
+  document.documentElement.lang = lang;
+
+  // Update content
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    el.classList.toggle('active', el.dataset.lang === lang);
+    // Handle display for specific elements
+    if (el.classList.contains('title') || el.classList.contains('cs-text')) {
+      el.style.display = el.dataset.lang === lang ? 'block' : 'none';
+    }
+  });
+
+  localStorage.setItem('lang', lang);
+}
+
+// Init from localStorage
+const saved = localStorage.getItem('lang') || 'fr';
+if (saved !== 'fr') setLang(saved);
+</script>
+</body>
+</html>
