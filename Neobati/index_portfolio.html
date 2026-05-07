@@ -37,11 +37,11 @@ nav{position:sticky;top:0;z-index:200;background:rgba(17,18,20,.94);backdrop-fil
 h1{font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,4.5vw,3.5rem);font-weight:400;line-height:1.1;color:var(--text);margin-bottom:1rem}
 h1 em{font-style:italic;color:var(--ocre)}
 .hero-desc{font-size:1rem;color:var(--text2);max-width:580px;font-weight:300;line-height:1.8;margin-bottom:2rem}
-.hero-meta{display:flex;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;width:fit-content}
-.meta-item{padding:.75rem 1.4rem;border-right:1px solid var(--border)}
-.meta-item:last-child{border-right:none}
-.meta-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.2rem}
-.meta-value{font-size:.9rem;font-weight:500;color:var(--text)}
+.hero-meta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:2rem}
+.meta-item{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.1rem 1.4rem;display:flex;flex-direction:column;gap:.25rem;min-width:170px}
+.meta-icon{font-size:1.2rem;margin-bottom:.15rem}
+.meta-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.meta-value{font-size:1rem;font-weight:600;color:var(--text)}
 
 /* ── SECTION HEADER ── */
 .section{margin-bottom:3rem}
@@ -100,7 +100,7 @@ footer strong{color:var(--ocre)}
   .split-card{grid-template-columns:1fr}.split-before{border-right:none;border-bottom:1px solid var(--border)}
   .metrics{grid-template-columns:1fr 1fr}
   .bottom{grid-template-columns:1fr}
-  .hero-meta{flex-direction:column;width:100%}.meta-item{border-right:none;border-bottom:1px solid var(--border)}.meta-item:last-child{border-bottom:none}
+  .hero-meta{flex-direction:column}.meta-item{min-width:unset}
   .nav-inner{flex-direction:column;gap:.7rem}
 }
 @media(max-width:520px){.metrics,.docs-grid{grid-template-columns:1fr}.container{padding:0 1rem}.hero{padding:3rem 0 2.2rem}}
@@ -122,9 +122,9 @@ footer strong{color:var(--ocre)}
     <h1>Néobâti<br><em>Artisanat</em></h1>
     <p class="hero-desc">Centralisation et automatisation de la gestion des chantiers — de la dispersion des outils vers un système intégré piloté par la donnée.</p>
     <div class="hero-meta">
-      <div class="meta-item"><div class="meta-label">Réalisation</div><div class="meta-value">Solo · 3 semaines</div></div>
-      <div class="meta-item"><div class="meta-label">Stack</div><div class="meta-value">Airtable · Make</div></div>
-      <div class="meta-item"><div class="meta-label">Contexte</div><div class="meta-value">Entreprise fictive · 2026</div></div>
+      <div class="meta-item"><div class="meta-icon">👤</div><div class="meta-label">Réalisation</div><div class="meta-value">Solo · 3 semaines</div></div>
+      <div class="meta-item"><div class="meta-icon">🛠️</div><div class="meta-label">Stack</div><div class="meta-value">Airtable · Make</div></div>
+      <div class="meta-item"><div class="meta-icon">🏢</div><div class="meta-label">Contexte</div><div class="meta-value">Entreprise fictive · 2026</div></div>
     </div>
   </div>
 
@@ -161,10 +161,10 @@ footer strong{color:var(--ocre)}
     <div class="eyebrow">Impact</div>
     <h2>Ce que le système <em>apporte</em></h2>
     <div class="metrics">
-      <div class="metric"><div class="metric-icon">🤖</div><div class="metric-value">100%</div><div class="metric-label">des assignations artisans automatisées</div></div>
-      <div class="metric"><div class="metric-icon">📊</div><div class="metric-value">1</div><div class="metric-label">source de vérité pour toute l'entreprise</div></div>
-      <div class="metric"><div class="metric-icon">⚡</div><div class="metric-value">0</div><div class="metric-label">ressaisie manuelle entre les outils</div></div>
-      <div class="metric"><div class="metric-icon">💶</div><div class="metric-value">Auto</div><div class="metric-label">relances clients et suivi de trésorerie</div></div>
+      <div class="metric"><div class="metric-icon">🤖</div><div class="metric-value">Auto</div><div class="metric-label">Artisans assignés selon planning et zone — sans intervention humaine</div></div>
+      <div class="metric"><div class="metric-icon">⚡</div><div class="metric-value">0 doublon</div><div class="metric-label">Chaque donnée saisie une fois, disponible partout en temps réel</div></div>
+      <div class="metric"><div class="metric-icon">📡</div><div class="metric-value">Temps réel</div><div class="metric-label">Avancement des chantiers visible instantanément par toute l'équipe</div></div>
+      <div class="metric"><div class="metric-icon">💶</div><div class="metric-value">0 oubli</div><div class="metric-label">Relances, factures et paiements suivis et déclenchés automatiquement</div></div>
     </div>
   </section>
 
@@ -172,20 +172,14 @@ footer strong{color:var(--ocre)}
 
   <!-- STACK + DOCS -->
   <section class="section">
-    <div class="eyebrow">Stack & Documentation</div>
-    <h2>Les outils et la <em>documentation</em></h2>
-    <div class="bottom">
-      <div class="stack-cards">
-        <div class="stack-card"><div class="stack-icon">🗄️</div><div><div class="stack-name">Airtable</div><div class="stack-role">Base relationnelle, interfaces, formulaires</div></div></div>
-        <div class="stack-card"><div class="stack-icon">⚙️</div><div><div class="stack-name">Make (ex-Integromat)</div><div class="stack-role">Scénarios d'automatisation, webhooks, routeurs</div></div></div>
-      </div>
-      <div class="docs-grid">
-        <a class="doc-link" href="Base_donnees_finale.html"><div><div class="doc-name">Base de données</div><span class="doc-tag tag-m">Métier</span></div><span class="doc-arrow">→</span></a>
-        <a class="doc-link" href="interfaces_finales_user.html"><div><div class="doc-name">Interfaces</div><span class="doc-tag tag-m">Métier</span></div><span class="doc-arrow">→</span></a>
-        <a class="doc-link" href="automatisations_explication_simple.html"><div><div class="doc-name">Automatisations</div><span class="doc-tag tag-m">Métier</span></div><span class="doc-arrow">→</span></a>
-        <a class="doc-link" href="Explication_champs_bd_technicien.html"><div><div class="doc-name">Champs Airtable</div><span class="doc-tag tag-t">Technique</span></div><span class="doc-arrow">→</span></a>
-        <a class="doc-link" href="automatisations_techniciens.html"><div><div class="doc-name">Scénarios Make</div><span class="doc-tag tag-t">Technique</span></div><span class="doc-arrow">→</span></a>
-      </div>
+    <div class="eyebrow">Documentation</div>
+    <h2>Explorer le projet <em>en détail</em></h2>
+    <div class="docs-grid">
+      <a class="doc-link" href="Base_donnees_finale.html"><div><div class="doc-name">Base de données</div><span class="doc-tag tag-m">Métier</span></div><span class="doc-arrow">→</span></a>
+      <a class="doc-link" href="interfaces_finales_user.html"><div><div class="doc-name">Interfaces</div><span class="doc-tag tag-m">Métier</span></div><span class="doc-arrow">→</span></a>
+      <a class="doc-link" href="automatisations_explication_simple.html"><div><div class="doc-name">Automatisations</div><span class="doc-tag tag-m">Métier</span></div><span class="doc-arrow">→</span></a>
+      <a class="doc-link" href="Explication_champs_bd_technicien.html"><div><div class="doc-name">Champs Airtable</div><span class="doc-tag tag-t">Technique</span></div><span class="doc-arrow">→</span></a>
+      <a class="doc-link" href="automatisations_techniciens.html"><div><div class="doc-name">Scénarios Make</div><span class="doc-tag tag-t">Technique</span></div><span class="doc-arrow">→</span></a>
     </div>
   </section>
 
