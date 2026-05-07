@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Automatisations — Néobâti Artisanat</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet"/>
+<style>
+/* =========================================================
+   1. VARIABLES GLOBALES
+========================================================= */
+
+:root {
+  --bg:#111214;
+  --bg-soft:#191C20;
+  --card:#1E2228;
+
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.16);
+
+  --text:#E8EAED;
+  --muted:#A0A8B0;
+  --soft:#68717B;
+
+  /* Ocre orangé — extrait de base-donnees-neobati-FINAL_1 */
+  --ocre:#E8A040;
+  --ocre-dim:rgba(232,160,64,.13);
+  --ocre-mid:rgba(232,160,64,.28);
+
+  --airtable:#5BA3F5;
+  --airtable-soft:rgba(91,163,245,.13);
+  --airtable-border:rgba(91,163,245,.34);
+
+  --make:#60D0A0;
+  --make-soft:rgba(96,208,160,.12);
+  --make-border:rgba(96,208,160,.32);
+
+  --router:#B99CFF;
+  --router-soft:rgba(185,156,255,.13);
+  --router-border:rgba(185,156,255,.34);
+
+  --warning:#E8B84A;
+  --warning-soft:rgba(232,184,74,.12);
+  --warning-border:rgba(232,184,74,.32);
+
+  --radius-lg:24px;
+  --radius-md:16px;
+  --modal-padding:clamp(14px,2vw,26px);
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  min-height:100vh;
+  font-size:16px;
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  line-height:1.65;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(232,160,64,.15), transparent 32%),
+    radial-gradient(circle at 88% 84%, rgba(96,208,160,.10), transparent 32%),
+    linear-gradient(180deg, #111214 0%, #15171B 48%, #111214 100%);
+}
+
+/* =========================================================
+   2. PAGE
+========================================================= */
+
+.navbar {
+  position:sticky; top:0; z-index:50;
+  background:rgba(17,18,20,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-inner {
+  max-width:1160px; margin:0 auto; padding:.85rem 1.5rem;
+  display:flex; justify-content:space-between; gap:1rem; align-items:center;
+}
+
+.nav-brand {
+  font-family:'DM Serif Display',serif;
+  color:var(--ocre);
+  font-size:1.1rem; text-decoration:none; white-space:nowrap;
+}
+
+.nav-links { display:flex; gap:.35rem; flex-wrap:wrap; justify-content:flex-end; }
+
+.nav-links a {
+  color:var(--muted); text-decoration:none; font-size:.88rem; font-weight:600;
+  padding:.42rem .9rem; border-radius:999px; border:1px solid transparent;
+  transition:.2s;
+}
+
+.nav-links a.active, .nav-links a:hover {
+  color:var(--ocre); background:var(--ocre-dim); border-color:var(--ocre-mid);
+}
+
+.container { max-width:1120px; margin:0 auto; padding:0 1.5rem; }
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero { padding:4.8rem 0 2.8rem; }
+
+.eyebrow {
+  display:inline-flex; align-items:center; gap:.55rem;
+  color:var(--ocre); font-size:.8rem; font-weight:800;
+  letter-spacing:.11em; text-transform:uppercase; margin-bottom:1.1rem;
+}
+.eyebrow::before { content:""; width:22px; height:1px; background:var(--ocre); }
+
+h1, h2, h3 { font-family:'DM Serif Display',serif; font-weight:400; line-height:1.12; }
+
+h1 { font-size:clamp(2.4rem,5vw,4rem); margin-bottom:1rem; }
+h1 em { color:var(--ocre); font-style:italic; }
+
+.hero-text {
+  max-width:840px; color:var(--muted);
+  font-size:clamp(1.02rem,2vw,1.12rem); font-weight:300;
+}
+
+/* =========================================================
+   CARTES PRINCIPE (2 cartes)
+========================================================= */
+
+.principe-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  margin-bottom:3rem;
+}
+
+@media(max-width:700px) { .principe-grid { grid-template-columns:1fr; } }
+
+.principe-card {
+  padding:1.4rem 1.6rem;
+  border-radius:var(--radius-lg);
+  border:1px solid;
+  display:flex; flex-direction:column; gap:.55rem;
+}
+
+.principe-card.airtable-card {
+  background:linear-gradient(135deg, rgba(91,163,245,.12), rgba(91,163,245,.04));
+  border-color:var(--airtable-border);
+}
+
+.principe-card.make-card {
+  background:linear-gradient(135deg, rgba(96,208,160,.12), rgba(96,208,160,.04));
+  border-color:var(--make-border);
+}
+
+.principe-card-header {
+  display:flex; align-items:center; gap:.7rem;
+}
+
+.principe-logo {
+  width:36px; height:36px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem;
+}
+
+.airtable-card .principe-logo { background:var(--airtable-soft); }
+.make-card .principe-logo     { background:var(--make-soft); }
+
+.principe-card-title {
+  font-family:'DM Serif Display',serif;
+  font-size:1.15rem; font-weight:400;
+}
+
+.airtable-card .principe-card-title { color:var(--airtable); }
+.make-card .principe-card-title     { color:var(--make); }
+
+.principe-card-desc {
+  color:var(--muted); font-size:.92rem; line-height:1.6; font-weight:300;
+}
+
+.principe-card .legend {
+  display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.35rem;
+}
+
+/* =========================================================
+   TITRES DE SECTION AIRTABLE — cartes bleues premium
+========================================================= */
+
+.section { margin-bottom:3.5rem; }
+
+.section-header {
+  display:flex; align-items:center; gap:.9rem;
+  padding-bottom:.9rem; margin-bottom:1.15rem;
+  border-bottom:1px solid var(--border);
+}
+
+.section-icon {
+  width:40px; height:40px; border-radius:13px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--ocre-dim);
+}
+
+.section-icon.make { background:var(--make-soft); }
+.section-icon.airtable { background:var(--airtable-soft); }
+
+.section-title h2 { font-size:1.45rem; }
+
+.section-subtitle { color:var(--soft); font-size:.88rem; margin-top:.1rem; }
+
+/* Groupe-titre Airtable → carte bleue premium */
+.group-title {
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.28rem .85rem;
+  border-radius:999px;
+  background:linear-gradient(135deg, rgba(91,163,245,.18), rgba(91,163,245,.07));
+  border:1px solid rgba(91,163,245,.38);
+  color:var(--airtable);
+  font-size:.76rem;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  margin:2.8rem 0 .85rem;
+}
+
+/* Première occurrence : pas de marge top excessive */
+.group-title:first-child {
+  margin-top:0;
+}
+
+.group-title::before {
+  content:"";
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--airtable);
+  opacity:.75;
+}
+
+/* Groupe-titre Make — version verte */
+.group-title.make-group {
+  background:linear-gradient(135deg, rgba(96,208,160,.18), rgba(96,208,160,.07));
+  border-color:rgba(96,208,160,.38);
+  color:var(--make);
+}
+.group-title.make-group::before { background:var(--make); }
+
+/* =========================================================
+   CARTES AUTOMATISATION
+========================================================= */
+
+.automation-grid { display:grid; gap:.95rem; }
+
+.automation-card {
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:start; gap:1rem; padding:1.15rem;
+  background:rgba(25,28,32,.84);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:0 18px 50px rgba(0,0,0,.22);
+  transition:.2s ease;
+}
+
+.automation-card:hover { transform:translateY(-2px); border-color:var(--border-strong); }
+
+.automation-index {
+  width:42px; height:42px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center; font-weight:900;
+}
+
+.automation-index.airtable { color:var(--airtable); background:var(--airtable-soft); border:1px solid var(--airtable-border); }
+.automation-index.make     { color:var(--make);     background:var(--make-soft);     border:1px solid var(--make-border); }
+
+.automation-title  { font-size:1.02rem; font-weight:800; margin-bottom:.25rem; }
+.automation-desc   { color:var(--muted); font-size:clamp(.88rem,1.5vw,.95rem); line-height:1.6; }
+.automation-meta   { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.75rem; }
+
+.badge {
+  display:inline-flex; align-items:center;
+  border-radius:999px; padding:.18rem .55rem;
+  font-size:.75rem; font-weight:900; border:1px solid var(--border);
+}
+
+.badge-airtable { color:var(--airtable); background:var(--airtable-soft); border-color:var(--airtable-border); }
+.badge-make     { color:var(--make);     background:var(--make-soft);     border-color:var(--make-border); }
+.badge-router   { color:var(--router);   background:var(--router-soft);   border-color:var(--router-border); }
+.badge-warning  { color:var(--warning);  background:var(--warning-soft);  border-color:var(--warning-border); }
+.badge-ocre     { color:var(--ocre);     background:var(--ocre-dim);      border-color:var(--ocre-mid); }
+
+.btn {
+  border-radius:999px; border:1px solid var(--border);
+  min-height:44px; padding:.7rem 1rem;
+  font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:900;
+  cursor:pointer; white-space:nowrap; transition:.2s ease;
+}
+
+.btn:hover { transform:translateY(-1px); }
+.btn-airtable { color:var(--airtable); background:var(--airtable-soft); border-color:var(--airtable-border); }
+.btn-make     { color:var(--make);     background:var(--make-soft);     border-color:var(--make-border); }
+
+.btn-neutral { color:var(--muted); background:rgba(255,255,255,.035); border-color:var(--border); }
+.btn-neutral.active.airtable { color:var(--airtable); background:var(--airtable-soft); border-color:var(--airtable-border); }
+.btn-neutral.active.make     { color:var(--make);     background:var(--make-soft);     border-color:var(--make-border); }
+.btn-neutral.warning         { color:var(--warning);  background:var(--warning-soft);  border-color:var(--warning-border); }
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal {
+  position:fixed; inset:0; width:100vw; height:100vh;
+  display:none; z-index:999;
+  background:
+    radial-gradient(circle at 15% 8%, rgba(232,160,64,.14), transparent 32%),
+    radial-gradient(circle at 90% 85%, rgba(96,208,160,.12), transparent 30%),
+    rgba(17,18,20,.98);
+}
+
+.modal.is-open { display:flex; animation:fadeIn .22s ease both; }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+.modal-shell { width:100%; height:100%; display:flex; flex-direction:column; overflow:hidden; }
+
+.modal-top {
+  flex:0 0 auto; padding:16px var(--modal-padding);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:flex-start; justify-content:space-between; gap:18px;
+  background:rgba(17,18,20,.76); backdrop-filter:blur(16px);
+}
+
+.modal-kicker { font-size:.78rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--soft); margin-bottom:.25rem; }
+.modal-title  { font-size:clamp(1.05rem,2vw,1.35rem); font-weight:900; }
+.modal-desc   { color:var(--muted); font-size:clamp(.88rem,1.5vw,.95rem); max-width:790px; margin-top:.25rem; }
+
+.modal-close {
+  width:42px; height:42px; border-radius:999px;
+  border:1px solid var(--border-strong);
+  background:rgba(255,255,255,.04); color:var(--text);
+  font-size:1.35rem; cursor:pointer; flex-shrink:0;
+}
+
+.modal-controls {
+  flex:0 0 auto; padding:13px var(--modal-padding);
+  display:flex; justify-content:center; gap:.55rem; flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
+  background:rgba(17,18,20,.62); backdrop-filter:blur(16px);
+}
+
+.workflow-scroll  { flex:1 1 auto; overflow:auto; padding:var(--modal-padding); }
+.workflow-stage   { min-height:100%; display:flex; align-items:center; justify-content:center; }
+.workflow-canvas  { position:relative; width:min(1100px,100%); min-height:640px; margin:auto; }
+
+/* =========================================================
+   WORKFLOW STEPS + SVG
+========================================================= */
+
+.workflow-step {
+  position:absolute; z-index:3;
+  width:220px; min-width:220px; max-width:220px;
+  background:linear-gradient(180deg, rgba(30,34,40,.98), rgba(25,28,32,.98));
+  border:1px solid var(--border);
+  border-radius:18px; padding:14px 16px;
+  box-shadow:0 14px 35px rgba(0,0,0,.24);
+  transition:.28s ease;
+}
+
+.workflow-step.step-centered { transform:translateX(-50%) translateY(-50%); }
+.workflow-step.step-centered.active { transform:translateX(-50%) translateY(calc(-50% - 3px)); }
+
+.workflow-step.airtable { border-color:rgba(91,163,245,.22); }
+.workflow-step.make     { border-color:rgba(96,208,160,.22); }
+.workflow-step.router   { border-color:var(--router-border); }
+
+.module-label {
+  display:inline-flex; align-items:center; width:fit-content;
+  margin-bottom:.45rem; padding:.14rem .48rem;
+  border-radius:999px; font-size:.72rem; font-weight:1000;
+  letter-spacing:.08em; text-transform:uppercase;
+}
+
+.module-label.airtable { color:var(--airtable); background:var(--airtable-soft); border:1px solid var(--airtable-border); }
+.module-label.make     { color:var(--make);     background:var(--make-soft);     border:1px solid var(--make-border); }
+.module-label.router   { color:var(--router);   background:var(--router-soft);   border:1px solid var(--router-border); }
+.module-label.warning  { color:var(--warning);  background:var(--warning-soft);  border:1px solid var(--warning-border); }
+
+.step-icon  { font-size:1.22rem; margin-bottom:.3rem; }
+.step-title { color:var(--text); font-size:.95rem; font-weight:900; line-height:1.24; }
+.step-desc  { color:var(--muted); font-size:.82rem; line-height:1.45; margin-top:.35rem; }
+
+.workflow-step.active {
+  border-width:4px; transform:translateY(-3px);
+  box-shadow: 0 0 0 1px rgba(232,160,64,.22), 0 0 26px rgba(232,160,64,.18), 0 18px 38px rgba(0,0,0,.32);
+}
+
+.workflow-step.active.airtable { border-color:rgba(91,163,245,.86); }
+.workflow-step.active.make     { border-color:rgba(96,208,160,.86); }
+.workflow-step.active.router   { border-color:rgba(185,156,255,.88); }
+.workflow-step.done { border-width:2px; border-color:rgba(96,208,160,.72); }
+
+.branch-label {
+  position:absolute; top:-25px; left:50%; transform:translateX(-50%);
+  white-space:nowrap; font-size:.74rem; font-weight:1000;
+  letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 8px; border-radius:999px;
+  border:1px solid var(--border-strong);
+  background:rgba(17,18,20,.94);
+}
+
+.branch-label.ok { color:var(--make); border-color:var(--make-border); }
+.branch-label.ko { color:var(--warning); border-color:var(--warning-border); }
+
+.connector-svg {
+  position:absolute; inset:0; width:100%; height:100%;
+  z-index:1; overflow:visible; pointer-events:none;
+}
+
+.path-bg        { fill:none; stroke:rgba(255,255,255,.07); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+.path-flow      { fill:none; stroke:var(--make);    stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 5px rgba(96,208,160,.65)); }
+.path-flow.airtable-flow { stroke:var(--airtable); filter:drop-shadow(0 0 5px rgba(91,163,245,.65)); }
+.path-flow.ko   { stroke:var(--warning); filter:drop-shadow(0 0 5px rgba(232,184,74,.65)); }
+.path-flow.ok   { stroke:var(--make);   filter:drop-shadow(0 0 5px rgba(96,208,160,.65)); }
+
+@keyframes cardArrive {
+  0%   { box-shadow: 0 0 0 0   var(--arrive-glow-0, rgba(232,160,64,0)),  0 14px 35px rgba(0,0,0,.24); }
+  30%  { box-shadow: 0 0 0 6px var(--arrive-glow-1, rgba(232,160,64,.55)), 0 14px 35px rgba(0,0,0,.24); }
+  65%  { box-shadow: 0 0 0 3px var(--arrive-glow-2, rgba(232,160,64,.30)), 0 14px 35px rgba(0,0,0,.24); }
+  100% { box-shadow: 0 0 0 0   var(--arrive-glow-0, rgba(232,160,64,0)),  0 14px 35px rgba(0,0,0,.24); }
+}
+
+.workflow-step.arriving { animation: cardArrive .42s ease-out forwards; }
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px) {
+  .nav-inner { flex-direction:column; align-items:flex-start; }
+  .automation-card { grid-template-columns:1fr; }
+  .automation-card .btn { width:100%; padding:1rem; }
+  .workflow-canvas { width:100%; min-height:920px; }
+  .workflow-step { width:min(310px,90vw); max-width:310px; text-align:center; }  .module-label { margin-left:auto; margin-right:auto; }
+  .modal-controls { justify-content:stretch; }
+  .modal-controls .btn { flex:1 1 160px; }
+}
+
+footer {
+  border-top:1px solid var(--border); padding:2rem 0; margin-top:4rem;
+  text-align:center; color:var(--soft); font-size:.85rem;
+}
+
+/* NAV PILL — GitHub Pages ready */
+.nav-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--ocre-dim);border:1px solid var(--ocre-mid);border-radius:999px;padding:.35rem .95rem;font-size:.8rem;font-weight:700;color:var(--ocre);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav class="navbar"><div class="nav-inner"><a class="nav-brand" href="index.html">Néobâti Artisanat</a><span class="nav-pill">Automatisations techniques</span></div></nav>
+<main class="container">
+<section class="hero">
+<div class="eyebrow">Automatisations</div>
+<h1><em>Airtable et Make</em></h1>
+<p class="hero-text">
+      Cette version regroupe toutes les automatisations Airtable et les scénarios Make.
+      Les workflows utilisent des connecteurs SVG orthogonaux avec animation séquentielle.
+    </p>
+</section>
+<!-- Principe : 2 cartes -->
+<div class="principe-grid">
+<div class="principe-card airtable-card">
+<div class="principe-card-header">
+<div class="principe-logo">🗂️</div>
+<div class="principe-card-title">Airtable</div>
+</div>
+<div class="principe-card-desc">
+        Gestion des flux métier internes simples : mise à jour et création de nouveaux enregistrements,
+        déclencheurs sur conditions, liaisons entre tables et notifications internes.
+      </div>
+<div class="legend">
+<span class="badge badge-airtable">Airtable</span>
+<span class="badge badge-warning">Exception / Alerte</span>
+</div>
+</div>
+<div class="principe-card make-card">
+<div class="principe-card-header">
+<div class="principe-logo">🔗</div>
+<div class="principe-card-title">Make</div>
+</div>
+<div class="principe-card-desc">
+        Gestion des flux métier complexes et appels à des services externes :
+        géocodage Google Maps, scripts d'assignation Google, génération PDF, SMS Twilio,
+        emails via IA, relances automatisées.
+      </div>
+<div class="legend">
+<span class="badge badge-router">Router</span>
+</div>
+</div>
+</div>
+<section class="section">
+<div class="section-header">
+<div class="section-icon airtable">⚙️</div>
+<div class="section-title">
+<h2>Automatisations Airtable</h2>
+<div class="section-subtitle">Automatisations internes à Airtable, classées par section métier.</div>
+</div>
+</div>
+<div id="airtableList"></div>
+</section>
+<section class="section">
+<div class="section-header">
+<div class="section-icon make">🔗</div>
+<div class="section-title">
+<h2>Scénarios Make</h2>
+<div class="section-subtitle">Services externes, PDF, SMS, IA — règles métiers complexes.</div>
+</div>
+</div>
+<div id="makeList"></div>
+</section>
+</main>
+<footer>
+<div class="container">Documentation <strong>Néobâti Artisanat</strong> — Projet de soutenance 2026</div>
+</footer>
+<!-- MODAL UNIQUE -->
+<div aria-hidden="true" class="modal" id="workflowModal">
+<div class="modal-shell">
+<header class="modal-top">
+<div>
+<div class="modal-kicker" id="modalKicker"></div>
+<div class="modal-title" id="modalTitle"></div>
+<div class="modal-desc" id="modalDesc"></div>
+</div>
+<button aria-label="Fermer" class="modal-close" id="modalClose">×</button>
+</header>
+<div class="modal-controls" id="modalControls"></div>
+<div class="workflow-scroll" id="workflowScroll">
+<div class="workflow-stage">
+<div class="workflow-canvas" id="workflowCanvas"></div>
+</div>
+</div>
+</div>
+</div>
+<script>
+/* =========================================================
+   DONNÉES — V8 (blueprints Make intégrés)
+========================================================= */
+
+const AUTOMATIONS = [
+
+/* ── AIRTABLE ── */
+
+{"id":"at-new-client-form","section":"Nouveau prospect","title":"Nouveau client → formulaire rempli","type":"Airtable","tag":"Formulaire","desc":"Après soumission du formulaire client, Airtable met à jour le statut du client en Nouveau prospect.","layout":"simple","steps":[
+  ["📝","Formulaire envoyé","Le client soumet sa demande."],
+  ["👤","Table Clients","Nouvelle entrée client créée."],
+  ["🏷️","Statut client","Statut = Nouveau prospect."],
+  ["✅","Prospect prêt","Le dossier peut passer au devis."]
+]},
+
+{"id":"at-prospect-to-quote","section":"Nouveau prospect","title":"Statut Nouveau prospect → devis à proposer","type":"Airtable","tag":"Devis","desc":"Lorsqu'un client devient Nouveau prospect, Airtable crée un devis associé au bon record client.","layout":"simple","steps":[
+  ["🚦","Condition statut","Client = Nouveau prospect."],
+  ["📄","Créer devis","Nouvelle entrée dans Devis."],
+  ["🔗","Associer client","L'identifiant du client est automatiquement rattaché au devis."],
+  ["🏷️","Statut devis","Statut = Devis à proposer."]
+]},
+
+{"id":"at-prospect-manager","section":"Nouveau prospect","title":"Nouveau prospect → Chargée d'affaires","type":"Airtable","tag":"Condition","desc":"Airtable recherche la chargée d'affaires, l'associe au devis et lui envoie une notification.","layout":"serpentine","steps":[
+  ["📄","Devis créé","Entrée créée dans la table Devis."],
+  ["🚦","Condition","Statut = Devis à proposer."],
+  ["🔎","Recherche contact","Contact_Neobati : Emilie Poulain."],
+  ["🔗","Associer suivi","Suivi_top_management mis à jour."],
+  ["📧","Email interne","Notification envoyée."]
+]},
+
+{"id":"at-new-site-invoice","section":"Création Chantier / Facture","title":"New → Chantier / Facture","type":"Airtable","tag":"Chantier","desc":"Quand un devis est accepté, Airtable crée le chantier, la facture, les relie au client et déclenche les scénarios Make nécessaires.","layout":"serpentine","steps":[
+  ["✅","Devis accepté","Statut = Devis accepté."],
+  ["🏗️","Créer chantier","Statut_Chantier = Nouveau."],
+  ["🔗","MAJ devis","Lien vers le chantier créé."],
+  ["🧾","Créer facture","Statut = Nouvelle facture."],
+  ["🔗","MAJ facture","Lien facture ↔ chantier."],
+  ["📍","Webhook Maps","Déclenche Make géocodage."],
+  ["👷","Webhook assignation","Déclenche Make assignation artisans."]
+]},
+
+{"id":"at-new-intervention","section":"Création Chantier / Facture","title":"Statut Nouvelle intervention","type":"Airtable","tag":"Intervention","desc":"À la création d'une intervention, Airtable initialise automatiquement son statut à Nouvelle.","layout":"simple","steps":[
+  ["🛠️","Intervention créée","Nouvelle ligne Interventions."],
+  ["🏷️","MAJ statut","Statut = Nouvelle."],
+  ["✅","Intervention prête","Suivi terrain initialisé."]
+]},
+
+{"id":"at-detect-late-invoice","section":"Suivi facturation","title":"Détection → Retard facture","type":"Airtable","tag":"Retard","desc":"Airtable détecte une facture en retard (⚠️), met à jour l'état et déclenche Make pour la Relance 1.","layout":"simple","steps":[
+  ["⏰","Échéance dépassée","Date_Echeance < aujourd'hui."],
+  ["🚦","Conditions paiement","En attente + Facture envoyée + ⚠️."],
+  ["🏷️","État paiement","Etat_paiement = En retard. Statut = Relance 1 envoyée."],
+  ["📤","Webhook Make","Déclenche Relance facture 1."]
+]},
+
+{"id":"at-detect-relance2","section":"Suivi facturation","title":"Détection → Relance 2","type":"Airtable","tag":"Relance","desc":"Airtable détecte qu'une semaine s'est écoulée depuis la Relance 1 et déclenche Make pour la Relance 2.","layout":"simple","steps":[
+  ["⏰","Relance 1 + 1 sem.","Champ Relance1+1semaine = 1."],
+  ["🚦","Conditions","En retard + Relance 1 envoyée + ⚠️."],
+  ["🏷️","MAJ statut","Statut = Relance 2 envoyée."],
+  ["📤","Webhook Make","Déclenche Relance facture 2."]
+]},
+
+{"id":"at-invoice-sent-pending","section":"Suivi facturation","title":"Facture envoyée → paiement en attente","type":"Airtable","tag":"Paiement","desc":"Quand une facture passe au statut Facture envoyée, Airtable met l'état de paiement en attente.","layout":"simple","steps":[
+  ["📧","Facture envoyée","Statut = Facture envoyée."],
+  ["🏷️","État paiement","Etat_paiement = En attente."],
+  ["✅","Suivi activé","La facture peut être surveillée."]
+]},
+
+{"id":"at-paid-invoice","section":"Suivi facturation","title":"Paiement soldé → facture payée","type":"Airtable","tag":"Paiement","desc":"Si la vérification des montants est validée (✅), Airtable marque la facture comme payée et procède à la désassignation des personnes suivant la facture.","layout":"simple","steps":[
+  ["✅","Montant validé","Verification_montant contient ✅."],
+  ["🏷️","MAJ facture","Etat_paiement = Payé."],
+  ["🎯","Suivi_facture vidé","Champ Suivi_facture mis à vide."]
+]},
+
+{"id":"at-artisan-unavailable","section":"Artisan","title":"Artisan → indisponible / en mission","type":"Airtable","tag":"Webhook","desc":"Quand le statut d'un artisan devient Indisponible ou En mission, Airtable déclenche le scénario Make de réassignation automatique.","layout":"simple","steps":[
+  ["👷","Statut artisan","Indisponible ou En mission."],
+  ["🚦","Condition Airtable","Statut métier détecté."],
+  ["📤","Webhook Make","Déclenche Réassignation automatique."]
+]},
+
+{"id":"at-site-finished-invoice","section":"Avancement chantier","title":"Chantier terminé → envoi facture client","type":"Airtable","tag":"Facture","desc":"Quand un chantier passe au statut Terminé, Airtable déclenche le scénario Make d'envoi de facture client.","layout":"simple","steps":[
+  ["🏗️","Chantier terminé","Statut = Terminé."],
+  ["📤","Webhook Make","Déclenche Envoi facture client."],
+  ["🧾","Facturation lancée","La facture peut être envoyée."]
+]},
+
+{"id":"at-site-100","section":"Avancement chantier","title":"MAJ chantier → 100 % terminé","type":"Airtable","tag":"Avancement","desc":"Lorsque l'avancement chantier atteint 100 %, Airtable termine le chantier, clôt les interventions, archive le devis et libère les artisans.","layout":"serpentine","steps":[
+  ["📊","Avancement 100 %","Avancement_Chantier = 100 %."],
+  ["🔎","Recherche artisans","Artisans avec Statut = En mission."],
+  ["🏷️","MAJ chantier","Statut_Chantier = Terminé. Artisans_assignes vidé."],
+  ["🔎","Recherche interventions","Interventions avec Statut = En cours."],
+  ["🏷️","Clôture intervention","Statut intervention = Terminée."],
+  ["🔎","Recherche devis","Devis avec Statut = Devis accepté."],
+  ["🏷️","Archive devis","Statut = Devis archivé. Suivi_top_management vidé."],
+  ["🔁","Répéter records","Pour chaque artisan trouvé."],
+  ["👷","Libérer artisan","Statut artisan = Disponible."]
+]},
+
+{"id":"at-update-intervention-progress","section":"Avancement chantier","title":"MAJ avancement intervention","type":"Airtable","tag":"Rapport","desc":"Quand l'avancement d'une intervention change (vue Tableur Interventions), Airtable déclenche Make pour générer le rapport.","layout":"simple","steps":[
+  ["🛠️","Intervention modifiée","Champ Avancement_Intervention."],
+  ["👁️","Vue Interventions","Lorsque l'avancement est mis à jour."],
+  ["📤","Webhook Make","Déclenche Génération de rapport."]
+]},
+
+{"id":"at-low-stock","section":"Gestion stock","title":"Alerte → stock faible","type":"Airtable","tag":"Stock","desc":"Airtable détecte un stock restant inférieur à 20 unités et met à jour le statut du matériau.","layout":"simple","steps":[
+  ["📦","Stock restant","Stock_restant < 20."],
+  ["🚦","Condition statut","Statut matériau = Disponible."],
+  ["🏷️","MAJ matériau","Statut = Stock faible."]
+]},
+
+{"id":"at-supplier-order","section":"Gestion stock","title":"Commande fournisseur","type":"Airtable","tag":"Fournisseur","desc":"Lorsqu'un matériau est en stock faible, Airtable le passe en commande, recherche le fournisseur lié et envoie un email.","layout":"serpentine","steps":[
+  ["📦","Stock faible","Statut matériau = Stock faible."],
+  ["🏷️","MAJ matériau","Statut = En commande."],
+  ["🔎","Recherche fournisseur","Fournisseur lié au Materiaux_ID."],
+  ["📧","Email fournisseur","Demande de commande envoyée."]
+]},
+
+/* ── MAKE ── */
+
+{"id":"mk-maps","section":"Make","title":"Intégration Maps à partir d'une adresse","type":"Make","tag":"Google Maps","desc":"Make récupère les informations du chantier et du client, convertit l'adresse en coordonnées GPS via Google Maps, puis met à jour l'URL dans Airtable.","layout":"simple","steps":[
+  ["⚡","Webhook Airtable","Nouveau chantier/facture → chantier_record_id."],
+  ["🏗️","Info chantier","Lecture record Airtable (Adresse_chantier, GPS…)."],
+  ["📍","Google Maps","Adresse → géocode + URL Google Maps."],
+  ["🗂️","MAJ Airtable","Champs GPS et localisation mis à jour."]
+]},
+
+{"id":"mk-assign","section":"Make","title":"Assignation des artisans → Nouveau chantier","type":"Make","tag":"Router","desc":"Make récupère les informations du chantier et du client, itère sur les types de travaux, appelle le script d'assignation Google, puis route selon disponibilité : agrégation + SMS coordinatrice.","layout":"router",
+"preSteps":[
+  ["⚡","Webhook Airtable","Nouveau chantier détecté."],
+  ["🏗️","Info chantier","Lecture dossier chantier (Type_Travaux, Secteur…)."],
+  ["👤","Info client","Adresse et contexte client."],
+  ["🔁","Itération travaux","Boucle sur les types de travaux."],
+  ["🧠","Script assignation","Appel HTTP → recherche artisans disponibles."]
+],
+"router":["🔀","Router résultat","Assignation possible ?"],
+"branches":{
+  "ok":{"caption":"Cas A · Assignation OK","label":"Cas A · Assignation OK","steps":[
+    ["🧩","Agrégation artisans","Liste artisans retenus regroupée."],
+    ["📲","SMS coordinatrice","Notification Twilio envoyée."]
+  ]},
+  "ko":{"caption":"Cas B · Assignation KO","label":"Cas B · Assignation KO","steps":[
+    ["⚠️","Alerte assignation","Aucun résultat fiable."],
+    ["📲","SMS coordinatrice","Contrôle manuel demandé via Twilio."]
+  ]}
+}},
+
+{"id":"mk-reassign","section":"Make","title":"Réassignation automatique","type":"Make","tag":"Router","desc":"Quand un artisan devient indisponible, Make appelle le script de réassignation puis route : SMS de confirmation ou alerte manuelle.","layout":"router",
+"preSteps":[
+  ["⚡","Webhook Airtable","Artisan indisponible / en mission."],
+  ["🧠","Script réassignation","Appel HTTP → recherche artisan disponible."]
+],
+"router":["🔀","Router","Remplacement trouvé ?"],
+"branches":{
+  "ok":{"caption":"Cas A · Assignation OK","label":"Cas A · Assignation OK","steps":[
+    ["✅","Réassigner chantier","Nouvel artisan affecté."],
+    ["📲","SMS coordinatrice","Notification Twilio envoyée."]
+  ]},
+  "ko":{"caption":"Cas B · Assignation KO","label":"Cas B · Assignation KO","steps":[
+    ["⚠️","Alerter suivi","Traitement manuel requis."],
+    ["📲","SMS coordinatrice","Alerte Twilio envoyée."]
+  ]}
+}},
+
+{"id":"mk-progress","section":"Make","title":"Formulaire artisan — Avancement","type":"Make","tag":"Fillout","desc":"L'artisan soumet son avancement via Fillout (avancement %, photo, commentaires) ; Make met à jour les champs de l'intervention dans Airtable.","layout":"simple","steps":[
+  ["📱","Formulaire Fillout","Trigger : nouvelle soumission artisan."],
+  ["🗂️","MAJ intervention","Avancement %, photo, commentaires, URL Fillout."],
+  ["✅","Airtable à jour","Données prêtes pour la génération de rapport."]
+]},
+
+{"id":"mk-report","section":"Make","title":"Génération de rapport","type":"Make","tag":"PDF","desc":"Make enrichit un HTML par les données intervention, chantier, client, artisan, avancement en % et génère le rapport PDF via PDF.co et l'envoie par email au chef de chantier.","layout":"serpentine","steps":[
+  ["⚡","Webhook avancement","Intervention mise à jour (Airtable)."],
+  ["🛠️","Info intervention","Avancement %, photo, commentaires, Artisan_intervenant."],
+  ["🏗️","Info chantier","Contexte chantier."],
+  ["👤","Info client","Coordonnées et contexte client."],
+  ["👷","Info artisan","Nom, prénom, secteur, statut artisan."],
+  ["📊","Conversion %","Avancement_chantier_global en %."],
+  ["📄","PDF.co","Génération rapport HTML → PDF."],
+  ["📧","Email chef chantier","Rapport PDF envoyé via Google Email."]
+]},
+
+{"id":"mk-invoice","section":"Make","title":"Envoi facture client","type":"Make","tag":"Facturation","desc":"Quand le chantier est terminé (100 %), Make récupère chantier, facture et client, formate les dates, génère la facture PDF, rédige l'email via IA puis envoie et met à jour Airtable.","layout":"serpentine","steps":[
+  ["⚡","Webhook chantier","Chantier 100 % terminé (Airtable)."],
+  ["🏗️","Infos chantier","Données chantier (prix, type travaux, dates)."],
+  ["🧾","Infos facture","Montants HT, TVA, TTC, dates échéance/émission."],
+  ["👤","Infos client","Email et coordonnées client."],
+  ["📅","Formatage dates","util:SetVariables → Date_Echeance, Date_Emission."],
+  ["📄","Facture PDF","pdf-co:HTMLtoPDF → Facture_{{ID}}_neobati.pdf."],
+  ["🤖","Génération email IA","openai-gpt-3 → email personnalisé."],
+  ["📧","Envoi email","Client + CC directeur via Google Email."],
+  ["🗂️","MAJ facture","Statut facture mis à jour dans Airtable."]
+]},
+
+{"id":"mk-reminder","section":"Make","title":"Relance facture 1","type":"Make","tag":"Relance","desc":"En cas de retard de paiement, Make récupère facture et chantier, génère un email par IA, l'envoie, et met à jour la date de relance 1 dans Airtable.","layout":"serpentine","steps":[
+  ["⚡","Webhook retard","Facture en retard — Relance 1 (Airtable)."],
+  ["🧾","Infos facture","Montants, dates échéance/émission."],
+  ["🏗️","Infos chantier","Contexte du dossier."],
+  ["🤖","Génération email IA","Relance personnalisée par IA."],
+  ["📧","Envoi email","Client + CC directeur via Google Email."],
+  ["🗂️","MAJ date relance 1","Date_relance_1 mise à jour dans Airtable."]
+]},
+
+{"id":"mk-reminder2","section":"Make","title":"Relance facture 2","type":"Make","tag":"Relance","desc":"Une semaine après la Relance 1, Make génère un email par IA, l'envoie et met à jour la date de relance 2 dans Airtable.","layout":"serpentine","steps":[
+  ["⚡","Webhook relance 2","Relance 2 déclenchée (Airtable)."],
+  ["🧾","Infos facture","Montants, dates, état de paiement."],
+  ["🏗️","Infos chantier","Contexte du dossier."],
+  ["🤖","Génération email IA","Relance personnalisée par IA."],
+  ["📧","Envoi email","Client + CC directeur via Google Email."],
+  ["🗂️","MAJ date relance 2","Date_relance_2 mise à jour dans Airtable."]
+]}
+
+];
+
+/* =========================================================
+   CONSTANTES LAYOUT
+========================================================= */
+
+const DOT_SPACING       = 18;
+const DOT_ANIMATION_MS  = 400;
+const DOT_DELAY_MS      = 40;
+const N_DOTS_H          = 5;
+const N_DOTS_V          = 4;
+const DOT_SEG_H         = N_DOTS_H * DOT_SPACING;   /* 5×18 = 90px — segment H fixe */
+const DOT_SEG_V         = N_DOTS_V * DOT_SPACING;
+const CARD_W_EST        = 220;   /* = width fixée en CSS */
+const CARD_H_EST        = 115;
+const H_GAP             = CARD_W_EST + DOT_SEG_H;   /* 220 + 90 = 310px — uniforme */
+const CARD_STEP         = CARD_H_EST + DOT_SEG_V * 2;
+const TOP_PAD           = 80;
+
+/* =========================================================
+   RÉFÉRENCES DOM
+========================================================= */
+
+const airtableList  = document.getElementById("airtableList");
+const makeList      = document.getElementById("makeList");
+const modal         = document.getElementById("workflowModal");
+const modalClose    = document.getElementById("modalClose");
+const modalKicker   = document.getElementById("modalKicker");
+const modalTitle    = document.getElementById("modalTitle");
+const modalDesc     = document.getElementById("modalDesc");
+const modalControls = document.getElementById("modalControls");
+const workflowCanvas = document.getElementById("workflowCanvas");
+
+let current = null;
+let pathMap = {};
+let timers  = [];
+
+/* =========================================================
+   RENDU LISTES
+========================================================= */
+
+renderAutomationLists();
+
+function renderAutomationLists() {
+  renderBySection("Airtable", airtableList);
+  renderBySection("Make",     makeList);
+}
+
+function renderBySection(type, target) {
+  const items    = AUTOMATIONS.filter(item => item.type === type);
+  const sections = [...new Set(items.map(item => item.section))];
+  const showSectionTitles = sections.length > 1;
+
+  sections.forEach(section => {
+    if (showSectionTitles) {
+      const sectionTitle = document.createElement("div");
+      sectionTitle.className = "group-title" + (type === "Make" ? " make-group" : "");
+      sectionTitle.textContent = section;
+      target.appendChild(sectionTitle);
+    }
+
+    const grid = document.createElement("div");
+    grid.className = "automation-grid";
+
+    items.filter(item => item.section === section).forEach(item => {
+      const globalIndex = items.findIndex(x => x.id === item.id) + 1;
+      grid.appendChild(createAutomationCard(item, globalIndex));
+    });
+
+    target.appendChild(grid);
+  });
+}
+
+function createAutomationCard(item, index) {
+  const card   = document.createElement("article");
+  card.className = "automation-card";
+
+  const family      = item.type === "Airtable" ? "airtable" : "make";
+  const badge       = item.type === "Airtable" ? "badge-airtable" : "badge-make";
+  const layoutLabel = item.layout === "router" ? "Router" : item.layout === "serpentine" ? "Serpentin" : "Simple";
+
+  card.innerHTML = `
+    <div class="automation-index ${family}">${index}</div>
+    <div>
+      <div class="automation-title">${item.title}</div>
+      <div class="automation-desc">${item.desc}</div>
+      <div class="automation-meta">
+        ${item.type === "Airtable" ? '<span class="badge badge-airtable">Airtable</span>' : ""}
+        <span class="badge badge-router">${item.tag}</span>
+        <span class="badge badge-warning">${layoutLabel}</span>
+      </div>
+    </div>
+    <button class="btn btn-${family}" data-open="${item.id}">Voir le workflow</button>
+  `;
+
+  card.querySelector("[data-open]").addEventListener("click", () => openModal(item.id));
+  return card;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(id) {
+  const item = AUTOMATIONS.find(x => x.id === id);
+  if (!item) return;
+
+  clearTimers();
+  current = item;
+  pathMap = {};
+
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+
+  modalKicker.textContent = item.type === "Airtable" ? "Workflow Airtable" : "Workflow Make";
+  modalKicker.style.color = item.type === "Airtable" ? "var(--airtable)" : "var(--make)";
+  modalTitle.textContent  = item.title;
+  modalDesc.textContent   = item.desc;
+
+  workflowCanvas.innerHTML = "";
+  modalControls.innerHTML  = "";
+
+  renderWorkflow(item);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      drawAllPaths();
+      runWorkflow(item.layout === "router" ? "ok" : "default");
+    });
+  });
+}
+
+function closeModal() {
+  clearTimers();
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  workflowCanvas.innerHTML = "";
+}
+
+modalClose.addEventListener("click", closeModal);
+modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
+document.addEventListener("keydown", event => { if (event.key === "Escape" && modal.classList.contains("is-open")) closeModal(); });
+
+function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+function setTimer(fn, delay) { const t = setTimeout(fn, delay); timers.push(t); }
+
+/* =========================================================
+   WORKFLOW RENDER
+========================================================= */
+
+function renderWorkflow(item) {
+  const family = item.type === "Airtable" ? "airtable" : "make";
+
+  if (item.layout === "router") {
+    modalControls.innerHTML = `
+      <button class="btn btn-neutral active make" data-run="ok">${item.branches.ok.label}</button>
+      <button class="btn btn-neutral warning"     data-run="ko">${item.branches.ko.label}</button>
+    `;
+  } else {
+    modalControls.innerHTML = `<button class="btn btn-neutral active ${family}" data-run="default">Relancer l'automatisation</button>`;
+  }
+
+  modalControls.querySelectorAll("[data-run]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      modalControls.querySelectorAll(".btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      requestAnimationFrame(() => { drawAllPaths(); runWorkflow(btn.dataset.run); });
+    });
+  });
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "connector-svg");
+  svg.setAttribute("id",    "connectorSvg");
+  workflowCanvas.appendChild(svg);
+
+  if (item.layout === "router") renderRouter(item);
+  else                          renderLinear(item);
+}
+
+function renderLinear(item) {
+  const canvasW   = workflowCanvas.offsetWidth || 1100;
+  const positions = getLinearPositions(item.steps.length, item.layout, canvasW);
+  item.steps.forEach((step, i) => createStep(step, i, positions[i], item.type));
+  for (let i = 0; i < item.steps.length - 1; i++) registerPath(`p${i}`, i, i + 1, "auto");
+}
+
+function renderRouter(item) {
+  const canvasW  = workflowCanvas.offsetWidth || 1100;
+  const pre      = item.preSteps || [];
+  const totalPre = pre.length;
+  const positions = getRouterPositions(totalPre, canvasW);
+
+  pre.forEach((step, i) => createStep(step, i, positions.pre[i], item.type));
+
+  const routerIndex = totalPre;
+  createStep(item.router, routerIndex, positions.router, "Router");
+
+  const ok1 = routerIndex + 1, ko1 = routerIndex + 2;
+  const ok2 = routerIndex + 3, ko2 = routerIndex + 4;
+
+  createStep(item.branches.ok.steps[0], ok1, positions.ok1, item.type, item.branches.ok.caption, "ok");
+  createStep(item.branches.ko.steps[0], ko1, positions.ko1, item.type, item.branches.ko.caption, "ko");
+
+  if (item.branches.ok.steps[1]) createStep(item.branches.ok.steps[1], ok2, positions.ok2, item.type);
+  if (item.branches.ko.steps[1]) createStep(item.branches.ko.steps[1], ko2, positions.ko2, item.type);
+
+  for (let i = 0; i < totalPre - 1; i++) registerPath(`pre${i}`, i, i + 1, "auto");
+
+  registerPath("to-router",  totalPre - 1, routerIndex, "to-router");
+  registerPath("router-ok",  routerIndex,  ok1,         "from-router", "ok");
+  registerPath("router-ko",  routerIndex,  ko1,         "from-router", "ko");
+  registerPath("ok-next",    ok1,          ok2,         "auto",        "ok");
+  registerPath("ko-next",    ko1,          ko2,         "auto",        "ko");
+}
+
+function createStep(step, index, pos, family, branchCaption = "", branchType = "") {
+  const card       = document.createElement("article");
+  const familyClass = family === "Airtable" ? "airtable" : family === "Router" ? "router" : "make";
+  const labelClass  = branchType === "ko" ? "warning" : familyClass;
+
+  card.className    = `workflow-step ${familyClass} step-centered`;
+  card.dataset.step = index;
+  card.style.left   = `${pos.cx}px`;
+  card.style.top    = `${pos.cy}px`;
+
+  card.innerHTML = `
+    ${branchCaption ? `<div class="branch-label ${branchType}">${branchCaption}</div>` : ""}
+    <div class="module-label ${labelClass}">Module ${index + 1}</div>
+    <div class="step-icon">${step[0]}</div>
+    <div class="step-title">${step[1]}</div>
+    <div class="step-desc">${step[2]}</div>
+  `;
+
+  workflowCanvas.appendChild(card);
+}
+
+/* =========================================================
+   POSITIONS LAYOUT
+========================================================= */
+
+function getLinearPositions(count, layout, canvasW) {
+  if (window.innerWidth <= 900) {
+    const totalH = Math.max(760, count * CARD_STEP + TOP_PAD + 60);
+    workflowCanvas.style.minHeight = `${totalH}px`;
+    return Array.from({length: count}, (_, i) => ({ cx: canvasW / 2, cy: TOP_PAD + i * CARD_STEP }));
+  }
+
+  if (layout === "simple") {
+    const canvasH   = TOP_PAD * 2 + CARD_H_EST;
+    workflowCanvas.style.minHeight = `${canvasH}px`;
+    const midY      = canvasH / 2;
+    const totalSpan = (count - 1) * H_GAP;
+    const startX    = (canvasW - totalSpan) / 2;
+    return Array.from({length: count}, (_, i) => ({ cx: startX + i * H_GAP, cy: midY }));
+  }
+
+  const rowCount = Math.ceil(count / 3);
+  const canvasH  = TOP_PAD + rowCount * CARD_STEP + 60;
+  workflowCanvas.style.minHeight = `${canvasH}px`;
+
+  const col0 = (canvasW - 2 * H_GAP) / 2;
+  const cols  = [col0, col0 + H_GAP, col0 + 2 * H_GAP];
+
+  return Array.from({length: count}, (_, i) => {
+    const row  = Math.floor(i / 3);
+    const col  = i % 3;
+    const ltr  = row % 2 === 0;
+    const colX = ltr ? col : 2 - col;
+    return { cx: cols[colX], cy: TOP_PAD + row * CARD_STEP };
+  });
+}
+
+function getRouterPositions(preCount, canvasW) {
+  const midX     = canvasW / 2;
+  const branchDX = H_GAP;
+
+  if (window.innerWidth <= 900) {
+    const totalH = Math.max(1050, (preCount + 5) * CARD_STEP + TOP_PAD + 60);
+    workflowCanvas.style.minHeight = `${totalH}px`;
+    const pre = Array.from({length: preCount}, (_, i) => ({ cx: midX, cy: TOP_PAD + i * CARD_STEP }));
+    const routerCY = TOP_PAD + preCount * CARD_STEP;
+    return {
+      pre,
+      router: { cx: midX, cy: routerCY },
+      ok1:    { cx: midX, cy: routerCY + CARD_STEP },
+      ko1:    { cx: midX, cy: routerCY + CARD_STEP * 2 },
+      ok2:    { cx: midX, cy: routerCY + CARD_STEP * 3 },
+      ko2:    { cx: midX, cy: routerCY + CARD_STEP * 4 }
+    };
+  }
+
+  if (preCount <= 2) {
+    const lines   = 4;
+    const canvasH = TOP_PAD + lines * CARD_STEP + 60;
+    workflowCanvas.style.minHeight = `${canvasH}px`;
+    const cy = (line) => TOP_PAD + line * CARD_STEP;
+    const prePositions = preCount === 1
+      ? [{ cx: midX, cy: cy(0) }]
+      : [{ cx: midX - branchDX, cy: cy(0) }, { cx: midX + branchDX, cy: cy(0) }];
+    return {
+      pre:    prePositions,
+      router: { cx: midX,             cy: cy(1) },
+      ok1:    { cx: midX - branchDX,  cy: cy(2) },
+      ko1:    { cx: midX + branchDX,  cy: cy(2) },
+      ok2:    { cx: midX - branchDX,  cy: cy(3) },
+      ko2:    { cx: midX + branchDX,  cy: cy(3) }
+    };
+  }
+
+  const lines   = 5;
+  const canvasH = TOP_PAD + lines * CARD_STEP + 60;
+  workflowCanvas.style.minHeight = `${canvasH}px`;
+  const cy      = (line) => TOP_PAD + line * CARD_STEP;
+  const l0Start = midX - H_GAP;
+  const l1Left  = midX - H_GAP / 2;
+  const l1Right = midX + H_GAP / 2;
+
+  return {
+    pre: [
+      { cx: l0Start,               cy: cy(0) },
+      { cx: l0Start + H_GAP,       cy: cy(0) },
+      { cx: l0Start + H_GAP * 2,   cy: cy(0) },
+      { cx: l1Left,                cy: cy(1) },
+      { cx: l1Right,               cy: cy(1) }
+    ],
+    router: { cx: midX,            cy: cy(2) },
+    ok1:    { cx: midX - branchDX, cy: cy(3) },
+    ko1:    { cx: midX + branchDX, cy: cy(3) },
+    ok2:    { cx: midX - branchDX, cy: cy(4) },
+    ko2:    { cx: midX + branchDX, cy: cy(4) }
+  };
+}
+
+/* =========================================================
+   SVG CONNECTEURS
+========================================================= */
+
+function registerPath(key, from, to, mode, colorClass) {
+  const svg  = document.getElementById("connectorSvg");
+  const bg   = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  bg.setAttribute("class",   "path-bg");
+  // Détermine la classe couleur : colorClass explicite > type du workflow courant
+  const baseColor = colorClass ? colorClass : (current && current.type === "Airtable" ? "airtable-flow" : "");
+  path.setAttribute("class", "path-flow" + (baseColor ? " " + baseColor : ""));
+  svg.appendChild(bg);
+  svg.appendChild(path);
+  pathMap[key] = {from, to, mode, bg, path};
+}
+
+function drawAllPaths() {
+  const svg = document.getElementById("connectorSvg");
+  if (!svg) return;
+  const rect = workflowCanvas.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
+
+  Object.values(pathMap).forEach(item => {
+    const from = getRect(item.from);
+    const to   = getRect(item.to);
+    if (!from || !to) return;
+    const result = makePath(from, to, item.mode);
+    item.bg.setAttribute("d",   result.d);
+    item.path.setAttribute("d", result.d);
+    const len = item.path.getTotalLength();
+    const dur = Math.round(300 + len * 0.55);
+    item.path.style.transition       = "none";
+    item.path.style.strokeDasharray  = `${len}`;
+    item.path.style.strokeDashoffset = `${len}`;
+    item._len = len;
+    item._dur = dur;
+  });
+}
+
+function getRect(index) {
+  const el = workflowCanvas.querySelector(`[data-step="${index}"]`);
+  if (!el) return null;
+  const c = workflowCanvas.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  return {
+    left: r.left - c.left, right:  r.right  - c.left,
+    top:  r.top  - c.top,  bottom: r.bottom - c.top,
+    cx:   r.left - c.left + r.width  / 2,
+    cy:   r.top  - c.top  + r.height / 2
+  };
+}
+
+function makePath(from, to, mode) {
+  const m = 12;
+
+  /* ── HORIZONTAL (même ligne) ── */
+  if (mode === "auto" && Math.abs(from.cy - to.cy) < CARD_H_EST / 2) {
+    if (from.cx < to.cx) {
+      return { d: `M ${from.right + m} ${from.cy} L ${to.left - m} ${to.cy}` };
+    } else {
+      return { d: `M ${from.left - m} ${from.cy} L ${to.right + m} ${to.cy}` };
+    }
+  }
+
+  /* ── FROM-ROUTER : bifurcation commune à forkY fixe sous le router ──
+     Les deux branches (ok à gauche, ko à droite) descendent du même point
+     vertical forkY = router.bottom + CARD_STEP/2, assurant des bras égaux. */
+  if (mode === "from-router") {
+    const forkY = from.bottom + CARD_STEP / 2;
+    const start = { x: from.cx,  y: from.bottom + m };
+    const end   = { x: to.cx,    y: to.top - m };
+    return { d: `M ${start.x} ${start.y} L ${start.x} ${forkY} L ${end.x} ${forkY} L ${end.x} ${end.y}` };
+  }
+
+  /* ── CAS GÉNÉRAL (vertical + coude) ── */
+  const start = { x: from.cx, y: from.bottom + m };
+  const end   = { x: to.cx,   y: to.top - m };
+  const midY  = (from.bottom + to.top) / 2;
+  return { d: `M ${start.x} ${start.y} L ${start.x} ${midY} L ${end.x} ${midY} L ${end.x} ${end.y}` };
+}
+
+window.addEventListener("resize", () => {
+  if (modal.classList.contains("is-open")) requestAnimationFrame(() => drawAllPaths());
+});
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function resetWorkflow() {
+  workflowCanvas.querySelectorAll(".workflow-step").forEach(step => {
+    step.classList.remove("active", "done", "arriving");
+  });
+  Object.values(pathMap).forEach(item => {
+    item.path.style.transition       = "none";
+    item.path.style.strokeDashoffset = `${item._len || 9999}`;
+  });
+}
+
+const SCROLL_MS = 380;
+function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+function smoothScrollTo(el, targetTop, targetLeft) {
+  const startTop  = el.scrollTop,  startLeft  = el.scrollLeft;
+  const diffTop   = targetTop - startTop, diffLeft = targetLeft - startLeft;
+  const startTime = performance.now();
+  if (Math.abs(diffTop) < 4 && Math.abs(diffLeft) < 4) return;
+  function step(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / SCROLL_MS, 1);
+    const ease = easeInOutCubic(t);
+    el.scrollTop  = startTop  + diffTop  * ease;
+    el.scrollLeft = startLeft + diffLeft * ease;
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function activateStep(index) {
+  const step = workflowCanvas.querySelector(`[data-step="${index}"]`);
+  if (!step) return;
+  step.classList.add("active");
+  const scrollEl      = document.getElementById("workflowScroll");
+  if (!scrollEl) return;
+  const containerRect = scrollEl.getBoundingClientRect();
+  const stepRect      = step.getBoundingClientRect();
+  const targetTop  = stepRect.top  - containerRect.top  + scrollEl.scrollTop  + stepRect.height  / 2 - scrollEl.clientHeight / 2;
+  const targetLeft = stepRect.left - containerRect.left + scrollEl.scrollLeft + stepRect.width   / 2 - scrollEl.clientWidth  / 2;
+  smoothScrollTo(scrollEl, targetTop, targetLeft);
+}
+
+function completeStep(index) {
+  const step = workflowCanvas.querySelector(`[data-step="${index}"]`);
+  if (!step) return;
+  step.classList.remove("active");
+  step.classList.add("done");
+}
+
+function activatePath(key) {
+  const item = pathMap[key];
+  if (!item) return;
+  const len = item._len || 0;
+  const dur = item._dur || 500;
+
+  /* Détecte la couleur active pour le flash d'arrivée */
+  const isKo        = item.path.classList.contains("ko");
+  const isAirtable  = item.path.classList.contains("airtable-flow");
+  const arriveColor = isAirtable ? "rgba(91,163,245," : isKo ? "rgba(232,184,74," : "rgba(96,208,160,";
+
+  item.path.style.transition       = "none";
+  item.path.style.strokeDasharray  = `${len}`;
+  item.path.style.strokeDashoffset = `${len}`;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      item.path.style.transition       = `stroke-dashoffset ${dur}ms cubic-bezier(.4,0,.2,1)`;
+      item.path.style.strokeDashoffset = "0";
+      setTimer(() => {
+        const targetEl = workflowCanvas.querySelector(`[data-step="${item.to}"]`);
+        if (!targetEl) return;
+        targetEl.classList.remove("arriving");
+        void targetEl.offsetWidth;
+        targetEl.classList.add("arriving");
+        /* Flash couleur selon mode */
+        targetEl.style.setProperty("--arrive-color", arriveColor);
+        setTimeout(() => targetEl.classList.remove("arriving"), 420);
+      }, dur);
+    });
+  });
+}
+
+function runWorkflow(mode = "default") {
+  if (!current) return;
+  clearTimers();
+  resetWorkflow();
+  drawAllPaths();
+  if (current.layout === "router") runRouter(mode);
+  else                             runLinear();
+}
+
+function pathDuration(key) {
+  const item = pathMap[key];
+  return item ? (item._dur || 500) : 500;
+}
+
+function runLinear() {
+  const count = current.steps.length;
+  let cursor  = 0;
+  activateStep(0);
+  for (let i = 0; i < count - 1; i++) {
+    const pathKey    = `p${i}`;
+    const activateAt = cursor + 700;
+    setTimer(() => activatePath(pathKey), activateAt);
+    setTimer(() => completeStep(i),       activateAt + 150);
+    const dur  = pathDuration(pathKey);
+    cursor     = activateAt + dur;
+    setTimer(() => activateStep(i + 1),  cursor);
+  }
+  setTimer(() => completeStep(count - 1), cursor + 600);
+}
+
+function runRouter(mode = "ok") {
+  const preCount    = current.preSteps.length;
+  const routerIndex = preCount;
+  const branch1     = mode === "ko" ? preCount + 2 : preCount + 1;
+  const branch2     = mode === "ko" ? preCount + 4 : preCount + 3;
+  const routerPath  = mode === "ko" ? "router-ko"  : "router-ok";
+  const nextPath    = mode === "ko" ? "ko-next"    : "ok-next";
+  const modeColor   = mode === "ko" ? "ko" : "ok";
+
+  /* ── Recolorie TOUS les chemins selon le mode choisi dès le début ── */
+  Object.entries(pathMap).forEach(([key, item]) => {
+    // Ne pas toucher aux canvas Airtable (couleur bleue fixe)
+    if (current && current.type === "Airtable") return;
+    item.path.classList.remove("ok", "ko");
+    item.path.classList.add(modeColor);
+  });
+
+  let cursor = 0;
+  activateStep(0);
+
+  for (let i = 0; i < preCount - 1; i++) {
+    const pathKey    = `pre${i}`;
+    const activateAt = cursor + 700;
+    setTimer(() => activatePath(pathKey), activateAt);
+    setTimer(() => completeStep(i),       activateAt + 150);
+    cursor = activateAt + pathDuration(pathKey);
+    setTimer(() => activateStep(i + 1), cursor);
+  }
+
+  const toRouterAt = cursor + 700;
+  setTimer(() => activatePath("to-router"), toRouterAt);
+  setTimer(() => completeStep(preCount - 1), toRouterAt + 150);
+  cursor = toRouterAt + pathDuration("to-router");
+  setTimer(() => activateStep(routerIndex), cursor);
+
+  const routerAt = cursor + 700;
+  setTimer(() => activatePath(routerPath), routerAt);
+  setTimer(() => completeStep(routerIndex), routerAt + 150);
+  cursor = routerAt + pathDuration(routerPath);
+  setTimer(() => activateStep(branch1), cursor);
+
+  const branch1At = cursor + 700;
+  setTimer(() => activatePath(nextPath), branch1At);
+  setTimer(() => completeStep(branch1),  branch1At + 150);
+  cursor = branch1At + pathDuration(nextPath);
+  setTimer(() => activateStep(branch2), cursor);
+
+  setTimer(() => completeStep(branch2), cursor + 600);
+}
+</script>
+</body>
+</html>

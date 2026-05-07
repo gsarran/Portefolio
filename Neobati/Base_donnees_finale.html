@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>La Base de Données — Néobâti Artisanat</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg:       #111214;
+  --bg2:      #15181d;
+  --bg3:      #1a1e25;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+  --text:     #E8EAED;
+  --text2:    #8A929C;
+  --text3:    #505860;
+
+  /* Ocre orangé — remplace le bleu */
+  --ocre:      #E8A040;
+  --ocre-dim:  rgba(232,160,64,0.12);
+  --ocre-mid:  rgba(232,160,64,0.28);
+
+  --green-dim: rgba(96,208,160,0.1);
+  --amber-dim: rgba(232,184,74,0.1);
+}
+
+body { font-family:'DM Sans',sans-serif; background:radial-gradient(circle at 18% 10%, rgba(232,160,64,.15), transparent 32%), radial-gradient(circle at 88% 84%, rgba(96,208,160,.10), transparent 32%), linear-gradient(180deg, #111214 0%, #15171B 48%, #111214 100%); color:var(--text); line-height:1.75; min-height:100vh; font-size:16px; }
+
+/* NAV */
+nav { position:sticky; top:0; z-index:200; background:rgba(17,18,20,0.94); backdrop-filter:blur(18px); border-bottom:1px solid var(--border); padding:0.9rem 0; }
+.nav-inner { max-width:1200px; margin:0 auto; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; }
+.nav-brand { font-family:'DM Serif Display',serif; font-size:1.15rem; color:var(--ocre); text-decoration:none; }
+.nav-links { display:flex; gap:0.3rem; }
+.nav-links a { font-size:0.85rem; font-weight:500; color:var(--text2); text-decoration:none; padding:0.35rem 1rem; border-radius:100px; border:1px solid transparent; transition:all 0.2s; }
+.nav-links a:hover { color:var(--text); border-color:var(--border2); }
+.nav-links a.active { background:var(--ocre-dim); color:var(--ocre); border-color:var(--ocre-mid); }
+
+/* LAYOUT */
+.container { max-width:1200px; margin:0 auto; padding:0 2rem; }
+
+/* HERO */
+.hero { padding:4.5rem 0 3rem; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:0.5rem; font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--ocre); margin-bottom:1.2rem; }
+.hero-eyebrow::before { content:''; display:block; width:20px; height:1px; background:var(--ocre); }
+h1 { font-family:'DM Serif Display',serif; font-size:clamp(2.4rem,4.5vw,3.4rem); font-weight:400; line-height:1.15; color:var(--text); margin-bottom:1.1rem; }
+h1 em { font-style:italic; color:var(--ocre); }
+.hero-desc { font-size:1.1rem; color:var(--text2); max-width:560px; font-weight:300; line-height:1.8; }
+
+/* WORKFLOW */
+.workflow { margin-bottom:3.5rem; }
+.workflow-grid {
+  display:flex;
+  align-items:center;
+  gap:0;
+  flex-wrap:nowrap;
+}
+.wf-step {
+  flex:1;
+  min-width:0;
+  background:var(--bg3);
+  border:2px solid var(--border2);
+  border-radius:14px;
+  padding:1.6rem 1.1rem 1.4rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:0.65rem;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.wf-step:hover {
+  border-color:var(--ocre);
+  border-width:3px;
+  box-shadow:0 0 0 2px rgba(232,160,64,0.2);
+}
+.wf-arrow {
+  flex-shrink:0;
+  font-size:1.8rem;
+  color:var(--text2);
+  padding:0 0.3rem;
+  line-height:1;
+  font-weight:700;
+}
+.wf-icon  { font-size:2rem; margin-bottom:0.1rem; }
+.wf-title { font-size:0.9rem; font-weight:600; color:var(--ocre); }
+.wf-desc  { font-size:0.82rem; color:var(--text2); font-weight:300; line-height:1.5; }
+
+/* SECTIONS */
+.section { margin-bottom:3.5rem; }
+.section-title { display:flex; align-items:center; gap:0.9rem; margin-bottom:1.3rem; padding-bottom:0.9rem; border-bottom:1px solid var(--border); }
+.section-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.icon-ocre  { background:var(--ocre-dim); }
+.icon-green { background:var(--green-dim); }
+.icon-amber { background:var(--amber-dim); }
+h2 { font-family:'DM Serif Display',serif; font-size:1.5rem; font-weight:400; color:var(--text); }
+
+.table-grid { display:grid; gap:0.8rem; }
+@media(min-width:560px){ .table-grid { grid-template-columns:1fr 1fr; } }
+@media(min-width:800px){ .table-grid.three { grid-template-columns:1fr 1fr 1fr; } }
+
+.tcard { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.3rem; display:flex; align-items:flex-start; gap:1rem; transition:border-color 0.2s; }
+.tcard:hover { border-color:var(--border2); }
+.tcard-icon { font-size:1.4rem; margin-top:0.05rem; flex-shrink:0; }
+.tcard-name { font-size:1rem; font-weight:600; color:var(--text); margin-bottom:0.25rem; }
+.tcard-desc { font-size:0.9rem; color:var(--text2); font-weight:300; line-height:1.6; }
+
+/* DIAGRAM */
+.diagram-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:18px; padding:2rem 1.5rem; margin:3rem 0; }
+.diagram-label { font-size:0.75rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); margin-bottom:1.5rem; text-align:center; }
+
+.schema-canvas {
+  position:relative;
+  width:100%;
+  aspect-ratio:1080 / 700;
+  max-width:1080px;
+  margin:0 auto;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.schema-canvas svg {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  z-index:1;
+  pointer-events:none;
+  overflow:visible;
+}
+
+/* NODES */
+.node {
+  position:absolute;
+  width:160px;
+  height:52px;
+  padding:0 14px;
+  border-radius:11px;
+  background:#1a1f2b;
+  border:1.5px solid rgba(255,255,255,0.1);
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  z-index:2;
+  cursor:default;
+  transition:opacity 0.3s;
+  user-select:none;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.node-icon  { font-size:15px; flex-shrink:0; }
+.node-title { font-size:13px; font-weight:600; line-height:1.2; }
+
+.n-chantiers {
+  height:70px;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:5px;
+  background:#1f1c12;
+  border-color:rgba(240,160,48,0.55)!important;
+}
+.n-chantiers .node-title { color:#F0A030; }
+.n-chantiers .node-row   { display:flex; align-items:center; gap:10px; }
+.badge-central {
+  font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+  color:#F0A030; background:rgba(240,160,48,0.14);
+  border:1px solid rgba(240,160,48,0.3); border-radius:20px; padding:1px 8px;
+}
+
+.n-clients      { border-color:rgba(91,163,245,0.45);  } .n-clients      .node-title { color:#5BA3F5; }
+.n-contact      { border-color:rgba(176,127,232,0.45); } .n-contact      .node-title { color:#B07FE8; }
+.n-devis        { border-color:rgba(220,220,220,0.45); } .n-devis        .node-title { color:#D8D8D8; }
+.n-factures     { border-color:rgba(240,120,64,0.45);  } .n-factures     .node-title { color:#F07840; }
+.n-paiements    { border-color:rgba(96,212,144,0.45);  } .n-paiements    .node-title { color:#60D490; }
+.n-artisans     { border-color:rgba(240,100,160,0.45); } .n-artisans     .node-title { color:#F064A0; }
+.n-interventions{ border-color:rgba(56,201,192,0.45);  } .n-interventions .node-title { color:#38C9C0; }
+.n-materiaux    { border-color:rgba(232,96,112,0.45);  } .n-materiaux    .node-title { color:#E86070; }
+.n-ligne        { border-color:rgba(212,184,74,0.45);  } .n-ligne        .node-title { color:#D4B84A; }
+.n-fournisseurs { border-color:rgba(155,139,228,0.45); } .n-fournisseurs .node-title { color:#9B8BE4; }
+
+.node.dimmed { opacity:0.1; }
+.node.lit    { opacity:1!important; }
+
+.lnk {
+  fill:none;
+  stroke:rgba(255,255,255,0.15);
+  stroke-width:1.5;
+  stroke-linecap:square;
+  stroke-linejoin:miter;
+  transition:stroke-width 0.2s, opacity 0.2s;
+}
+.lnk.dimmed { opacity:0.04; }
+.lnk.active { stroke-width:3; opacity:1; }
+
+footer { border-top:1px solid var(--border); padding:2rem 0; font-size:0.85rem; color:var(--text3); text-align:center; margin-top:4rem; }
+
+/* NAV PILL — GitHub Pages ready */
+.nav-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--ocre-dim);border:1px solid var(--ocre-mid);border-radius:999px;padding:.35rem .95rem;font-size:.8rem;font-weight:700;color:var(--ocre);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-brand" href="index.html">Néobâti Artisanat</a><span class="nav-pill">Base de données</span></div></nav>
+<div class="container">
+<!-- HERO -->
+<div class="hero">
+<div class="hero-eyebrow">Architecture des données</div>
+<h1>La <em>base relationnelle</em><br/>Néobâti Artisanat</h1>
+<p class="hero-desc">10 tables interconnectées pour gérer l'ensemble du cycle de vie d'un chantier — du premier contact client jusqu'au paiement final.</p>
+</div>
+<!-- SECTION 1 : Personnes -->
+<div class="section">
+<div class="section-title"><div class="section-icon icon-ocre">👥</div><h2>Les personnes impliquées</h2></div>
+<div class="table-grid three">
+<div class="tcard"><span class="tcard-icon">👤</span><div><div class="tcard-name">Clients</div><div class="tcard-desc">Coordonnées, type de travaux souhaités, statut commercial et budget.</div></div></div>
+<div class="tcard"><span class="tcard-icon">🔧</span><div><div class="tcard-name">Artisans</div><div class="tcard-desc">Spécialité, disponibilité en temps réel et chantiers assignés.</div></div></div>
+<div class="tcard"><span class="tcard-icon">🏢</span><div><div class="tcard-name">Contact Néobâti</div><div class="tcard-desc">Chargés d'affaires rattachés aux devis et aux factures.</div></div></div>
+</div>
+</div>
+<!-- SECTION 2 : Chantiers -->
+<div class="section">
+<div class="section-title"><div class="section-icon icon-ocre">🏗️</div><h2>Le suivi des chantiers</h2></div>
+<div class="table-grid">
+<div class="tcard"><span class="tcard-icon">🏗️</span><div><div class="tcard-name">Chantiers <span style="font-size:0.82rem;color:var(--ocre);font-weight:400;">— Table centrale</span></div><div class="tcard-desc">Le cœur du système. Relie toutes les informations : client, artisans, avancement et documents.</div></div></div>
+<div class="tcard"><span class="tcard-icon">📋</span><div><div class="tcard-name">Interventions</div><div class="tcard-desc">Chaque passage d'un artisan enregistré avec date, avancement et photos.</div></div></div>
+</div>
+</div>
+<!-- SECTION 3 : Matériaux -->
+<div class="section">
+<div class="section-title"><div class="section-icon icon-green">📦</div><h2>Les matériaux</h2></div>
+<div class="table-grid three">
+<div class="tcard"><span class="tcard-icon">📦</span><div><div class="tcard-name">Matériaux</div><div class="tcard-desc">Catalogue et stocks — prix unitaire, quantités disponibles et statut.</div></div></div>
+<div class="tcard"><span class="tcard-icon">🔗</span><div><div class="tcard-name">Ligne Matériau</div><div class="tcard-desc">Détail des matériaux par chantier — quantités et coût total calculé.</div></div></div>
+<div class="tcard"><span class="tcard-icon">🚛</span><div><div class="tcard-name">Fournisseurs</div><div class="tcard-desc">Coordonnées, matériaux fournis, dates de commande et livraison.</div></div></div>
+</div>
+</div>
+<!-- SECTION 4 : Finance -->
+<div class="section">
+<div class="section-title"><div class="section-icon icon-amber">💰</div><h2>La gestion financière</h2></div>
+<div class="table-grid three">
+<div class="tcard"><span class="tcard-icon">📄</span><div><div class="tcard-name">Devis</div><div class="tcard-desc">Propositions commerciales — montants HT/TTC automatiques, statut.</div></div></div>
+<div class="tcard"><span class="tcard-icon">🧾</span><div><div class="tcard-name">Factures</div><div class="tcard-desc">Facturation générée après acceptation du devis, avec suivi du paiement.</div></div></div>
+<div class="tcard"><span class="tcard-icon">💳</span><div><div class="tcard-name">Paiements</div><div class="tcard-desc">Suivi des règlements — montant payé, acomptes et mode de paiement.</div></div></div>
+</div>
+</div>
+<!-- TITRE AVANT SCHÉMA -->
+<div class="section-title" style="margin-bottom:0;">
+<div class="section-icon icon-ocre">🗺️</div>
+<h2>Les connexions entre les tables</h2>
+</div>
+<p style="font-size:1rem;color:var(--text2);font-weight:300;margin:0.6rem 0 0;line-height:1.75;">
+    Survolez une table pour visualiser ses relations avec les autres — les liaisons s'illuminent avec la couleur de la table sélectionnée.
+  </p>
+<!-- SCHÉMA -->
+<div class="diagram-wrap">
+<div class="diagram-label">Schéma relationnel interactif — survolez une table</div>
+<div class="schema-canvas" id="schema">
+<svg preserveaspectratio="xMidYMid meet" viewbox="0 0 1080 700">
+<path class="lnk" d="" id="l-clients-devis"></path>
+<path class="lnk" d="" id="l-clients-chantiers"></path>
+<path class="lnk" d="" id="l-clients-factures"></path>
+<path class="lnk" d="" id="l-contact-devis"></path>
+<path class="lnk" d="" id="l-contact-factures"></path>
+<path class="lnk" d="" id="l-chantiers-devis"></path>
+<path class="lnk" d="" id="l-chantiers-factures"></path>
+<path class="lnk" d="" id="l-factures-paiements"></path>
+<path class="lnk" d="" id="l-chantiers-artisans"></path>
+<path class="lnk" d="" id="l-chantiers-interventions"></path>
+<path class="lnk" d="" id="l-artisans-interventions"></path>
+<path class="lnk" d="" id="l-chantiers-materiaux"></path>
+<path class="lnk" d="" id="l-chantiers-ligne"></path>
+<path class="lnk" d="" id="l-materiaux-ligne"></path>
+<path class="lnk" d="" id="l-materiaux-fournisseurs"></path>
+</svg>
+<div class="node n-clients" data-id="clients" data-links="l-clients-devis l-clients-chantiers l-clients-factures" id="node-clients" style="left:40px;top:60px">
+<span class="node-icon">👤</span><span class="node-title">Clients</span>
+</div>
+<div class="node n-contact" data-id="contact" data-links="l-contact-devis l-contact-factures" id="node-contact" style="left:40px;top:390px">
+<span class="node-icon">🏢</span><span class="node-title">Contact Néobâti</span>
+</div>
+<div class="node n-devis" data-id="devis" data-links="l-clients-devis l-contact-devis l-chantiers-devis" id="node-devis" style="left:240px;top:60px">
+<span class="node-icon">📄</span><span class="node-title">Devis</span>
+</div>
+<div class="node n-chantiers" data-id="chantiers" data-links="l-clients-chantiers l-chantiers-devis l-chantiers-factures l-chantiers-artisans l-chantiers-interventions l-chantiers-materiaux l-chantiers-ligne" id="node-chantiers" style="left:240px;top:220px">
+<span class="badge-central">Table centrale</span>
+<div class="node-row"><span class="node-icon">🏗️</span><span class="node-title">Chantiers</span></div>
+</div>
+<div class="node n-factures" data-id="factures" data-links="l-clients-factures l-contact-factures l-chantiers-factures l-factures-paiements" id="node-factures" style="left:240px;top:390px">
+<span class="node-icon">🧾</span><span class="node-title">Factures</span>
+</div>
+<div class="node n-paiements" data-id="paiements" data-links="l-factures-paiements" id="node-paiements" style="left:240px;top:590px">
+<span class="node-icon">💳</span><span class="node-title">Paiements</span>
+</div>
+<div class="node n-artisans" data-id="artisans" data-links="l-chantiers-artisans l-artisans-interventions" id="node-artisans" style="left:500px;top:60px">
+<span class="node-icon">🔧</span><span class="node-title">Artisans</span>
+</div>
+<div class="node n-interventions" data-id="interventions" data-links="l-chantiers-interventions l-artisans-interventions" id="node-interventions" style="left:500px;top:390px">
+<span class="node-icon">📋</span><span class="node-title">Interventions</span>
+</div>
+<div class="node n-materiaux" data-id="materiaux" data-links="l-chantiers-materiaux l-materiaux-ligne l-materiaux-fournisseurs" id="node-materiaux" style="left:740px;top:130px">
+<span class="node-icon">📦</span><span class="node-title">Matériaux</span>
+</div>
+<div class="node n-ligne" data-id="ligne" data-links="l-chantiers-ligne l-materiaux-ligne" id="node-ligne" style="left:740px;top:390px">
+<span class="node-icon">🔗</span><span class="node-title">Ligne Matériau</span>
+</div>
+<div class="node n-fournisseurs" data-id="fournisseurs" data-links="l-materiaux-fournisseurs" id="node-fournisseurs" style="left:900px;top:220px">
+<span class="node-icon">🚛</span><span class="node-title">Fournisseurs</span>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<div class="container">Documentation <strong>Néobâti Artisanat</strong> — Projet de soutenance 2026</div>
+</footer>
+<script>
+const schema   = document.getElementById('schema');
+const allNodes = schema.querySelectorAll('.node');
+const allLinks = schema.querySelectorAll('.lnk');
+
+function bounds(node) {
+  const nr = node.getBoundingClientRect();
+  const sr = schema.getBoundingClientRect();
+  const sx = 1080 / sr.width;
+  const sy = 700  / sr.height;
+  const l  = (nr.left - sr.left) * sx;
+  const t  = (nr.top  - sr.top)  * sy;
+  const w  = nr.width  * sx;
+  const h  = nr.height * sy;
+  return {
+    l: { x: l,       y: t + h/2 },
+    r: { x: l + w,   y: t + h/2 },
+    t: { x: l + w/2, y: t       },
+    b: { x: l + w/2, y: t + h   },
+  };
+}
+
+function makePath(from, to, strategy, offset = 0.5) {
+  const mx = from.x + (to.x - from.x) * offset;
+  const my = from.y + (to.y - from.y) * offset;
+  switch(strategy) {
+    case 'H':     return `M ${from.x} ${from.y} H ${to.x}`;
+    case 'V':     return `M ${from.x} ${from.y} V ${to.y}`;
+    case 'H-V':   return `M ${from.x} ${from.y} H ${to.x} V ${to.y}`;
+    case 'V-H':   return `M ${from.x} ${from.y} V ${to.y} H ${to.x}`;
+    case 'H-V-H': return `M ${from.x} ${from.y} H ${mx} V ${to.y} H ${to.x}`;
+    case 'V-H-V': return `M ${from.x} ${from.y} V ${my} H ${to.x} V ${to.y}`;
+    default:      return `M ${from.x} ${from.y} H ${mx} V ${to.y} H ${to.x}`;
+  }
+}
+
+const CONN = [
+  { id:'l-clients-devis',           from:'node-clients',   fb:'r', to:'node-devis',        tb:'l', s:'H'     },
+  { id:'l-clients-chantiers',       from:'node-clients',   fb:'r', to:'node-chantiers',    tb:'l', s:'H-V-H', off:0.3 },
+  { id:'l-clients-factures',        from:'node-clients',   fb:'r', to:'node-factures',     tb:'l', s:'H-V-H', off:0.25 },
+  { id:'l-contact-devis',           from:'node-contact',   fb:'r', to:'node-devis',        tb:'l', s:'H-V-H', off:0.3 },
+  { id:'l-contact-factures',        from:'node-contact',   fb:'r', to:'node-factures',     tb:'l', s:'H'     },
+  { id:'l-chantiers-devis',         from:'node-chantiers', fb:'t', to:'node-devis',        tb:'b', s:'V'     },
+  { id:'l-chantiers-factures',      from:'node-chantiers', fb:'b', to:'node-factures',     tb:'t', s:'V'     },
+  { id:'l-factures-paiements',      from:'node-factures',  fb:'b', to:'node-paiements',   tb:'t', s:'V'     },
+  { id:'l-chantiers-artisans',      from:'node-chantiers', fb:'r', to:'node-artisans',     tb:'l', s:'H-V-H', off:0.4 },
+  { id:'l-chantiers-interventions', from:'node-chantiers', fb:'r', to:'node-interventions',tb:'l', s:'H-V-H', off:0.4 },
+  { id:'l-artisans-interventions',  from:'node-artisans',  fb:'b', to:'node-interventions',tb:'t', s:'V'     },
+  { id:'l-chantiers-materiaux',     from:'node-chantiers', fb:'r', to:'node-materiaux',   tb:'l', s:'H-V-H', off:0.5 },
+  { id:'l-chantiers-ligne',         from:'node-chantiers', fb:'r', to:'node-ligne',       tb:'l', s:'H-V-H', off:0.5 },
+  { id:'l-materiaux-ligne',         from:'node-materiaux', fb:'b', to:'node-ligne',       tb:'t', s:'V'     },
+  { id:'l-materiaux-fournisseurs',  from:'node-materiaux', fb:'r', to:'node-fournisseurs',tb:'t', s:'H-V'   },
+];
+
+function updatePaths() {
+  CONN.forEach(c => {
+    const fn = document.getElementById(c.from);
+    const tn = document.getElementById(c.to);
+    const pe = document.getElementById(c.id);
+    if (!fn || !tn || !pe) return;
+    pe.setAttribute('d', makePath(bounds(fn)[c.fb], bounds(tn)[c.tb], c.s, c.off ?? 0.5));
+  });
+}
+
+window.addEventListener('load',   updatePaths);
+window.addEventListener('resize', updatePaths);
+requestAnimationFrame(updatePaths);
+
+const REL = {
+  clients:       { color:'#5BA3F5', links:['l-clients-devis','l-clients-chantiers','l-clients-factures'] },
+  contact:       { color:'#B07FE8', links:['l-contact-devis','l-contact-factures'] },
+  chantiers:     { color:'#F0A030', links:['l-clients-chantiers','l-chantiers-devis','l-chantiers-factures','l-chantiers-artisans','l-chantiers-interventions','l-chantiers-materiaux','l-chantiers-ligne'] },
+  artisans:      { color:'#F064A0', links:['l-chantiers-artisans','l-artisans-interventions'] },
+  interventions: { color:'#38C9C0', links:['l-chantiers-interventions','l-artisans-interventions'] },
+  devis:         { color:'#D8D8D8', links:['l-clients-devis','l-contact-devis','l-chantiers-devis'] },
+  factures:      { color:'#F07840', links:['l-clients-factures','l-contact-factures','l-chantiers-factures','l-factures-paiements'] },
+  paiements:     { color:'#60D490', links:['l-factures-paiements'] },
+  materiaux:     { color:'#E86070', links:['l-chantiers-materiaux','l-materiaux-ligne','l-materiaux-fournisseurs'] },
+  ligne:         { color:'#D4B84A', links:['l-chantiers-ligne','l-materiaux-ligne'] },
+  fournisseurs:  { color:'#9B8BE4', links:['l-materiaux-fournisseurs'] }
+};
+
+const LINK_NODES = {};
+Object.entries(REL).forEach(([nid,{links}]) => {
+  links.forEach(lid => {
+    if(!LINK_NODES[lid]) LINK_NODES[lid] = new Set();
+    LINK_NODES[lid].add(nid);
+  });
+});
+
+function on(nodeId) {
+  const rel = REL[nodeId];
+  const activeSet = new Set(rel.links);
+  const connected = new Set([nodeId]);
+  rel.links.forEach(lid => {
+    if(LINK_NODES[lid]) LINK_NODES[lid].forEach(n => connected.add(n));
+  });
+  allNodes.forEach(n => {
+    n.classList.toggle('dimmed', !connected.has(n.dataset.id));
+    n.classList.toggle('lit',    connected.has(n.dataset.id));
+  });
+  allLinks.forEach(l => {
+    const active = activeSet.has(l.id);
+    l.classList.toggle('dimmed', !active);
+    l.classList.toggle('active',  active);
+    l.style.stroke = active ? rel.color : '';
+  });
+}
+
+function off() {
+  allNodes.forEach(n => n.classList.remove('dimmed','lit'));
+  allLinks.forEach(l => {
+    l.classList.remove('dimmed','active');
+    l.style.stroke = '';
+  });
+}
+
+allNodes.forEach(n => {
+  n.addEventListener('mouseenter', () => on(n.dataset.id));
+  n.addEventListener('mouseleave', off);
+});
+</script>
+</body>
+</html>

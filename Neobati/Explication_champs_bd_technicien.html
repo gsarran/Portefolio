@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Base de données technique — Néobâti Artisanat</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:        #111214;
+    --bg2:       #15181d;
+    --bg3:       #1a1e25;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.13);
+    --text:      #E8EAED;
+    --text2:     #8A929C;
+    --text3:     #505860;
+
+    /* Ocre orangé — aligné avec Base_donnees_finale */
+    --ocre:      #E8A040;
+    --ocre-dim:  rgba(232,160,64,0.12);
+    --ocre-mid:  rgba(232,160,64,0.28);
+    --green:     #60D0A0;
+    --green-dim: rgba(96,208,160,0.1);
+    --amber:     #E8B84A;
+    --amber-dim: rgba(232,184,74,0.1);
+    --purple:    #B99CFF;
+    --purple-dim:rgba(185,156,255,0.12);
+    --pink:      #F09AC2;
+    --pink-dim:  rgba(240,154,194,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: radial-gradient(circle at 18% 10%, rgba(232,160,64,.15), transparent 32%), radial-gradient(circle at 88% 84%, rgba(96,208,160,.10), transparent 32%), linear-gradient(180deg, #111214 0%, #15171B 48%, #111214 100%);
+    color: var(--text);
+    line-height: 1.75;
+    min-height: 100vh;
+    font-size: 16px;
+  }
+
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(17,18,20,0.94);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 0;
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem; color: var(--ocre);
+    text-decoration: none; letter-spacing: 0.01em;
+  }
+  .nav-links { display: flex; gap: 0.3rem; flex-wrap: wrap; justify-content: flex-end; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 500;
+    color: var(--text2); text-decoration: none;
+    padding: 0.35rem 1rem; border-radius: 100px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); border-color: var(--border2); }
+  .nav-links a.active { background: var(--ocre-dim); color: var(--ocre); border-color: var(--ocre-mid); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+  .hero { padding: 4.5rem 0 2.5rem; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ocre);
+    margin-bottom: 1.2rem;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 20px; height: 1px; background: var(--ocre);
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+    font-weight: 400; line-height: 1.15;
+    color: var(--text); margin-bottom: 1.1rem;
+  }
+  h1 em { font-style: italic; color: var(--ocre); }
+  .hero-desc {
+    font-size: 1.1rem; color: var(--text2);
+    max-width: 560px; font-weight: 300; line-height: 1.75;
+  }
+
+  .summary-card {
+    background: linear-gradient(135deg, rgba(232,160,64,0.12), rgba(185,156,255,0.08));
+    border: 1px solid var(--ocre-mid);
+    border-radius: 18px;
+    padding: 1.35rem 1.5rem;
+    margin: 0 0 3.2rem;
+    color: var(--text2);
+    font-size: 0.92rem;
+  }
+  .summary-card strong { color: var(--text); font-weight: 500; }
+
+  .legend {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .section { margin-bottom: 3.5rem; }
+  .section-title {
+    display: flex; align-items: center; gap: 0.9rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+    background: var(--ocre-dim);
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem; font-weight: 400;
+    color: var(--text);
+  }
+  .section-subtitle {
+    color: var(--text3);
+    font-size: 0.78rem;
+    margin-top: 0.1rem;
+  }
+
+  .schema-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 16px 35px rgba(0,0,0,0.18);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    background: rgba(255,255,255,0.025);
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  td {
+    padding: 0.82rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.018); }
+
+  .field-name {
+    color: var(--text);
+    font-size: 0.86rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .field-desc {
+    color: var(--text2);
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .type-badge.link { color: var(--ocre); background: var(--ocre-dim); border-color: var(--ocre-mid); }
+  .type-badge.formula { color: var(--green); background: var(--green-dim); border-color: rgba(96,208,160,0.22); }
+  .type-badge.computed { color: var(--purple); background: var(--purple-dim); border-color: rgba(185,156,255,0.24); }
+  .type-badge.select { color: var(--amber); background: var(--amber-dim); border-color: rgba(232,184,74,0.24); }
+  .type-badge.number { color: #7EDBD3; background: rgba(126,219,211,0.1); border-color: rgba(126,219,211,0.24); }
+  .type-badge.date { color: #F3A36B; background: rgba(243,163,107,0.1); border-color: rgba(243,163,107,0.24); }
+  .type-badge.action { color: var(--pink); background: var(--pink-dim); border-color: rgba(240,154,194,0.24); }
+  .type-badge.text { color: var(--text2); background: rgba(255,255,255,0.045); border-color: var(--border2); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0; margin-top: 4rem;
+    text-align: center;
+    font-size: 0.85rem; color: var(--text3);
+  }
+  footer strong { color: var(--ocre); }
+
+  @media (max-width: 760px) {
+    .container { padding: 0 1rem; }
+    .nav-inner { flex-direction: column; gap: 0.7rem; }
+    .schema-card { overflow-x: auto; }
+    table { min-width: 760px; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero, .summary-card { animation: fadeUp 0.55s ease both; }
+  .section { animation: fadeUp 0.55s ease 0.1s both; }
+
+/* NAV PILL — GitHub Pages ready */
+.nav-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--ocre-dim);border:1px solid var(--ocre-mid);border-radius:999px;padding:.35rem .95rem;font-size:.8rem;font-weight:700;color:var(--ocre);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-brand" href="index.html">Néobâti Artisanat</a><span class="nav-pill">Vue technique</span></div></nav>
+<div class="container">
+<div class="hero">
+<div class="hero-eyebrow">Guide — Technique</div>
+<h1>Dictionnaire des <br/><em>champs Airtable</em></h1>
+<p class="hero-desc">Cette page documente toutes les tables et tous les champs de la base, y compris les champs calculés, liés, lookup, rollup et champs techniques.</p>
+</div>
+<div class="summary-card">
+<strong>Lecture rapide :</strong> chaque table est présentée sous forme de tableau avec le nom du champ, son type Airtable et une description courte.
+    <div class="legend">
+<span class="type-badge link">Lien</span>
+<span class="type-badge formula">Formule</span>
+<span class="type-badge computed">Lookup/Rollup</span>
+<span class="type-badge select">Sélection</span>
+<span class="type-badge number">Nombre</span>
+<span class="type-badge date">Date</span>
+<span class="type-badge action">Action</span>
+<span class="type-badge text">Texte</span>
+</div>
+</div>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">🏢</div>
+<div>
+<h2>Contact_Neobati</h2>
+<div class="section-subtitle">8 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Team_Neobati</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant auto-généré de l'équipe</td>
+</tr>
+<tr>
+<td class="field-name">Fonction</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Fonction ou poste dans l'équipe</td>
+</tr>
+<tr>
+<td class="field-name">Email</td>
+<td><span class="type-badge action">Email</span></td>
+<td class="field-desc">Adresse email professionnelle</td>
+</tr>
+<tr>
+<td class="field-name">Telephone</td>
+<td><span class="type-badge action">Téléphone</span></td>
+<td class="field-desc">Numéro de téléphone</td>
+</tr>
+<tr>
+<td class="field-name">Devis</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Devis suivis par ce contact</td>
+</tr>
+<tr>
+<td class="field-name">Factures</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Factures suivies par ce contact</td>
+</tr>
+<tr>
+<td class="field-name">Nom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom de famille</td>
+</tr>
+<tr>
+<td class="field-name">Prenom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Prénom</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">👥</div>
+<div>
+<h2>Clients</h2>
+<div class="section-subtitle">19 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Client_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré du client</td>
+</tr>
+<tr>
+<td class="field-name">Email</td>
+<td><span class="type-badge action">Email</span></td>
+<td class="field-desc">Adresse email principale du client</td>
+</tr>
+<tr>
+<td class="field-name">Telephone</td>
+<td><span class="type-badge action">Téléphone</span></td>
+<td class="field-desc">Numéro de téléphone du client</td>
+</tr>
+<tr>
+<td class="field-name">Numero_rue</td>
+<td><span class="type-badge number">Nombre</span></td>
+<td class="field-desc">Numéro dans la rue de l'adresse du client</td>
+</tr>
+<tr>
+<td class="field-name">Rue</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom de la rue de l'adresse du client</td>
+</tr>
+<tr>
+<td class="field-name">Ville</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Ville de résidence du client</td>
+</tr>
+<tr>
+<td class="field-name">Code_postal</td>
+<td><span class="type-badge number">Nombre</span></td>
+<td class="field-desc">Code postal du client</td>
+</tr>
+<tr>
+<td class="field-name">Type_Travaux</td>
+<td><span class="type-badge select">Multi-sélection</span></td>
+<td class="field-desc">Type(s) de travaux souhaités par le client</td>
+</tr>
+<tr>
+<td class="field-name">Date_Debut_Souhaitee</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de début souhaitée pour les travaux</td>
+</tr>
+<tr>
+<td class="field-name">Date_Fin_Souhaitee</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de fin souhaitée pour les travaux</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantiers associés à ce client</td>
+</tr>
+<tr>
+<td class="field-name">Statut</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut commercial du client</td>
+</tr>
+<tr>
+<td class="field-name">Budget</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Fourchette de budget estimée du client</td>
+</tr>
+<tr>
+<td class="field-name">Devis</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Devis émis pour ce client</td>
+</tr>
+<tr>
+<td class="field-name">Factures</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Factures émises pour ce client</td>
+</tr>
+<tr>
+<td class="field-name">Formulaire_recu</td>
+<td><span class="type-badge date">Création</span></td>
+<td class="field-desc">Date et heure de réception du formulaire client</td>
+</tr>
+<tr>
+<td class="field-name">Nom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom de famille du client</td>
+</tr>
+<tr>
+<td class="field-name">Prenom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Prénom du client</td>
+</tr>
+<tr>
+<td class="field-name">Adresse_Complete</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Adresse complète formatée automatiquement</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">🔧</div>
+<div>
+<h2>Artisans</h2>
+<div class="section-subtitle">11 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Artisan_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Email</td>
+<td><span class="type-badge action">Email</span></td>
+<td class="field-desc">Adresse email professionnelle de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Telephone</td>
+<td><span class="type-badge action">Téléphone</span></td>
+<td class="field-desc">Numéro de téléphone de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Secteur_Activite</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Secteur d'activité de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Statut</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantiers auxquels l'artisan est assigné</td>
+</tr>
+<tr>
+<td class="field-name">Interventions</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Interventions réalisées par l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Nombre_chantiers</td>
+<td><span class="type-badge computed">Compteur</span></td>
+<td class="field-desc">Nombre total de chantiers de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Nom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom de famille de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Prenom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Prénom de l'artisan</td>
+</tr>
+<tr>
+<td class="field-name">Date_modification_statut</td>
+<td><span class="type-badge date">Modification</span></td>
+<td class="field-desc">Date de dernière modification du statut</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">🏗️</div>
+<div>
+<h2>Chantiers</h2>
+<div class="section-subtitle">24 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Chantier_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Description</td>
+<td><span class="type-badge text">Texte long</span></td>
+<td class="field-desc">Description détaillée des travaux du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Chantier</td>
+<td><span class="type-badge number">Devise</span></td>
+<td class="field-desc">Prix total du chantier hors matériaux</td>
+</tr>
+<tr>
+<td class="field-name">Type_Travaux</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Type de travaux issu du client</td>
+</tr>
+<tr>
+<td class="field-name">Date_Debut_Prevue</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Date de début prévue issue du client</td>
+</tr>
+<tr>
+<td class="field-name">Date_Fin_Prevue</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Date de fin prévue issue du client</td>
+</tr>
+<tr>
+<td class="field-name">Avancement_Chantier</td>
+<td><span class="type-badge computed">Rollup</span></td>
+<td class="field-desc">Pourcentage d'avancement calculé</td>
+</tr>
+<tr>
+<td class="field-name">Statut_Chantier</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut d'avancement du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Artisans_assignes</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Artisans affectés à ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Materiaux_ID</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Secteur d'activité pour les matériaux</td>
+</tr>
+<tr>
+<td class="field-name">Clients_assignes</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Clients liés à ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Devis_assignes</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Devis associés à ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Factures_assignes</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Factures associées à ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Localisation</td>
+<td><span class="type-badge action">Bouton</span></td>
+<td class="field-desc">Bouton d'ouverture de la localisation sur carte</td>
+</tr>
+<tr>
+<td class="field-name">Materiel_Necessaire</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Matériaux nécessaires pour ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Interventions</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Interventions réalisées sur ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Date_creation</td>
+<td><span class="type-badge date">Création</span></td>
+<td class="field-desc">Date de création automatique de l'enregistrement</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Materiel</td>
+<td><span class="type-badge computed">Rollup</span></td>
+<td class="field-desc">Prix total des matériaux</td>
+</tr>
+<tr>
+<td class="field-name">Nb_Jours_Avant_Nv_Chantier</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Nombre de jours avant le prochain chantier</td>
+</tr>
+<tr>
+<td class="field-name">Nom_Materiel</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Noms des matériaux associés</td>
+</tr>
+<tr>
+<td class="field-name">Adresse_chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Adresse du chantier issue du client</td>
+</tr>
+<tr>
+<td class="field-name">GPS</td>
+<td><span class="type-badge action">URL</span></td>
+<td class="field-desc">Lien GPS vers la localisation du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Date_modification</td>
+<td><span class="type-badge date">Modification</span></td>
+<td class="field-desc">Date de dernière modification de l'enregistrement</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">📋</div>
+<div>
+<h2>Interventions</h2>
+<div class="section-subtitle">24 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Intervention_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Description_chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Description du chantier lié</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantier auquel l'intervention est rattachée</td>
+</tr>
+<tr>
+<td class="field-name">Nom_Client</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Nom du client lié au chantier</td>
+</tr>
+<tr>
+<td class="field-name">Localisation</td>
+<td><span class="type-badge action">Bouton</span></td>
+<td class="field-desc">Bouton d'ouverture de la localisation sur carte</td>
+</tr>
+<tr>
+<td class="field-name">Artisan_intervenant</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Artisan réalisant l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Debut_Chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Date de début du chantier lié</td>
+</tr>
+<tr>
+<td class="field-name">Debut_Intervention</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date réelle de début de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Fin_Chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Date de fin prévue du chantier lié</td>
+</tr>
+<tr>
+<td class="field-name">Fin_Intervention</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date réelle de fin de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Type_intervention</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Type d'intervention réalisée</td>
+</tr>
+<tr>
+<td class="field-name">Statut</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Avancement_Intervention</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Pourcentage d'avancement de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Commentaires</td>
+<td><span class="type-badge text">Texte long</span></td>
+<td class="field-desc">Commentaires libres sur l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Photo</td>
+<td><span class="type-badge action">Pièces jointes</span></td>
+<td class="field-desc">Photos prises lors de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Dernière modification</td>
+<td><span class="type-badge date">Modification</span></td>
+<td class="field-desc">Date de dernière modification de l'enregistrement</td>
+</tr>
+<tr>
+<td class="field-name">Date de création</td>
+<td><span class="type-badge date">Création</span></td>
+<td class="field-desc">Date de création automatique</td>
+</tr>
+<tr>
+<td class="field-name">GPS</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Coordonnées GPS issues du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Picto</td>
+<td><span class="type-badge action">Pièces jointes</span></td>
+<td class="field-desc">Pictogramme associé au type d'intervention</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Formatage_pourcentage</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Avancement formaté en pourcentage</td>
+</tr>
+<tr>
+<td class="field-name">URL_Fillout</td>
+<td><span class="type-badge action">URL</span></td>
+<td class="field-desc">Lien vers le formulaire Fillout de l'intervention</td>
+</tr>
+<tr>
+<td class="field-name">Record_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant technique de l'enregistrement</td>
+</tr>
+<tr>
+<td class="field-name">Rapport</td>
+<td><span class="type-badge action">Bouton</span></td>
+<td class="field-desc">Bouton de génération du rapport d'intervention</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">📦</div>
+<div>
+<h2>Materiaux</h2>
+<div class="section-subtitle">13 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Materiaux_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré du matériau</td>
+</tr>
+<tr>
+<td class="field-name">Secteur</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Secteur d'activité auquel appartient le matériau</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantiers utilisant ce matériau</td>
+</tr>
+<tr>
+<td class="field-name">Description_Chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Description du chantier lié</td>
+</tr>
+<tr>
+<td class="field-name">Nom_materiel</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom du matériau</td>
+</tr>
+<tr>
+<td class="field-name">Stock_Disponible</td>
+<td><span class="type-badge number">Nombre</span></td>
+<td class="field-desc">Quantité en stock</td>
+</tr>
+<tr>
+<td class="field-name">Ligne_Materiel</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Détails des matériaux par chantier</td>
+</tr>
+<tr>
+<td class="field-name">Total_Materiel_Chantiers</td>
+<td><span class="type-badge computed">Rollup</span></td>
+<td class="field-desc">Total matériau consommé sur les chantiers</td>
+</tr>
+<tr>
+<td class="field-name">Stock_Restant</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Stock restant après consommation</td>
+</tr>
+<tr>
+<td class="field-name">Statut</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut du matériau</td>
+</tr>
+<tr>
+<td class="field-name">Fournisseurs</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Fournisseurs de ce matériau</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté du matériau</td>
+</tr>
+<tr>
+<td class="field-name">Statut_Chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Statut du chantier lié</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">🔗</div>
+<div>
+<h2>Ligne_Materiau</h2>
+<div class="section-subtitle">9 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Ligne_Materiel</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré de la ligne matériau</td>
+</tr>
+<tr>
+<td class="field-name">Secteur</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Secteur d'activité lié à cette ligne</td>
+</tr>
+<tr>
+<td class="field-name">Type_Materiel</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Type de matériau</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Unitaire</td>
+<td><span class="type-badge number">Devise</span></td>
+<td class="field-desc">Prix unitaire du matériau</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantier auquel cette ligne est rattachée</td>
+</tr>
+<tr>
+<td class="field-name">Quantite_attribuee</td>
+<td><span class="type-badge number">Nombre</span></td>
+<td class="field-desc">Quantité de matériau attribuée à ce chantier</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Materiel</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Prix total de la ligne</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté de la ligne</td>
+</tr>
+<tr>
+<td class="field-name">Description_Chantier</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Description du chantier lié</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">🚛</div>
+<div>
+<h2>Fournisseurs</h2>
+<div class="section-subtitle">11 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Fournisseur_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré du fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Téléphone</td>
+<td><span class="type-badge action">Téléphone</span></td>
+<td class="field-desc">Numéro de téléphone du fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Email</td>
+<td><span class="type-badge action">Email</span></td>
+<td class="field-desc">Adresse email du fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Adresse</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Adresse postale du fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Site Web</td>
+<td><span class="type-badge action">URL</span></td>
+<td class="field-desc">Site web du fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Secteur</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Description des matériaux fournis</td>
+</tr>
+<tr>
+<td class="field-name">Materiaux_ID</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Matériaux liés à ce fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Date_livraison</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de livraison prévue</td>
+</tr>
+<tr>
+<td class="field-name">Prenom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Prénom du contact fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Nom</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom de famille du contact fournisseur</td>
+</tr>
+<tr>
+<td class="field-name">Date_Commande</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de la dernière commande passée</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">📄</div>
+<div>
+<h2>Devis</h2>
+<div class="section-subtitle">18 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Devis_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré du devis</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantier associé à ce devis</td>
+</tr>
+<tr>
+<td class="field-name">Date_Emission</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date d'émission du devis</td>
+</tr>
+<tr>
+<td class="field-name">Statut</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut du devis</td>
+</tr>
+<tr>
+<td class="field-name">Clients</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Client destinataire du devis</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Chantiers_HT</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Prix du chantier HT issu du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Materiel_HT</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Prix des matériaux HT issu du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Total_HT</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Total HT calculé</td>
+</tr>
+<tr>
+<td class="field-name">TVA</td>
+<td><span class="type-badge number">Pourcentage</span></td>
+<td class="field-desc">Taux de TVA applicable au devis</td>
+</tr>
+<tr>
+<td class="field-name">Montant_TTC</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Montant TTC calculé automatiquement</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté du devis</td>
+</tr>
+<tr>
+<td class="field-name">Statut_client</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Statut du client lié</td>
+</tr>
+<tr>
+<td class="field-name">Email_Client</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Email du client lié</td>
+</tr>
+<tr>
+<td class="field-name">Telephone_Client</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Téléphone du client lié</td>
+</tr>
+<tr>
+<td class="field-name">Commentaire</td>
+<td><span class="type-badge text">Texte long</span></td>
+<td class="field-desc">Commentaires ou conditions particulières du devis</td>
+</tr>
+<tr>
+<td class="field-name">Etat_paiement</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">État du paiement</td>
+</tr>
+<tr>
+<td class="field-name">Suivi_top_management</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Lien vers le suivi direction</td>
+</tr>
+<tr>
+<td class="field-name">Email_Neobati</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Email de l'équipe Néobâti en charge</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">🧾</div>
+<div>
+<h2>Factures</h2>
+<div class="section-subtitle">23 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Factures_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Chantiers</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Chantier associé à cette facture</td>
+</tr>
+<tr>
+<td class="field-name">Date_Emission</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date d'émission de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Date_Echeance</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Date d'échéance calculée automatiquement</td>
+</tr>
+<tr>
+<td class="field-name">Statut</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Statut de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Clients</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Client destinataire de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Chantiers_HT</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Prix du chantier HT issu du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Prix_Materiel_HT</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Prix des matériaux HT issu du chantier</td>
+</tr>
+<tr>
+<td class="field-name">Email_Client</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Email du client lié</td>
+</tr>
+<tr>
+<td class="field-name">Total_HT</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Total HT calculé</td>
+</tr>
+<tr>
+<td class="field-name">TVA</td>
+<td><span class="type-badge number">Pourcentage</span></td>
+<td class="field-desc">Taux de TVA applicable à la facture</td>
+</tr>
+<tr>
+<td class="field-name">Montant_TTC</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Montant TTC calculé automatiquement</td>
+</tr>
+<tr>
+<td class="field-name">Paiements</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Paiements associés à cette facture</td>
+</tr>
+<tr>
+<td class="field-name">Etat_paiement</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">État du paiement</td>
+</tr>
+<tr>
+<td class="field-name">Date_relance_1</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de première relance de paiement</td>
+</tr>
+<tr>
+<td class="field-name">Date_relance_2</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de deuxième relance de paiement</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Commentaire</td>
+<td><span class="type-badge text">Texte long</span></td>
+<td class="field-desc">Commentaires ou mentions particulières de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Suivi_facture</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Lien vers le suivi de la facture</td>
+</tr>
+<tr>
+<td class="field-name">Email_Suivi_Neobati</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Email de l'équipe Néobâti en charge</td>
+</tr>
+<tr>
+<td class="field-name">Date_modification</td>
+<td><span class="type-badge date">Modification</span></td>
+<td class="field-desc">Date de dernière modification de l'enregistrement</td>
+</tr>
+<tr>
+<td class="field-name">Relance 1 + 1 semaine</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Ajoute une semaine à la date de relance 1</td>
+</tr>
+<tr>
+<td class="field-name">Verification_montant</td>
+<td><span class="type-badge computed">Lookup</span></td>
+<td class="field-desc">Vérification du montant depuis les paiements</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">💳</div>
+<div>
+<h2>Paiements</h2>
+<div class="section-subtitle">12 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Paiement_ID</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Identifiant unique auto-généré du paiement</td>
+</tr>
+<tr>
+<td class="field-name">Date de paiement</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date effective du paiement</td>
+</tr>
+<tr>
+<td class="field-name">Montant_a_payer</td>
+<td><span class="type-badge computed">Rollup</span></td>
+<td class="field-desc">Montant total à payer</td>
+</tr>
+<tr>
+<td class="field-name">Montant_paye</td>
+<td><span class="type-badge number">Devise</span></td>
+<td class="field-desc">Montant effectivement payé</td>
+</tr>
+<tr>
+<td class="field-name">Acompte_recu</td>
+<td><span class="type-badge number">Devise</span></td>
+<td class="field-desc">Montant de l'acompte reçu</td>
+</tr>
+<tr>
+<td class="field-name">Date_Acompte</td>
+<td><span class="type-badge date">Date</span></td>
+<td class="field-desc">Date de réception de l'acompte</td>
+</tr>
+<tr>
+<td class="field-name">Mode_paiement</td>
+<td><span class="type-badge select">Sélection</span></td>
+<td class="field-desc">Mode de paiement utilisé</td>
+</tr>
+<tr>
+<td class="field-name">Facture_assignee</td>
+<td><span class="type-badge link">Lien</span></td>
+<td class="field-desc">Facture associée à ce paiement</td>
+</tr>
+<tr>
+<td class="field-name">Verification_montant</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Vérification de cohérence entre montant dû et payé</td>
+</tr>
+<tr>
+<td class="field-name">Commentaire paiement</td>
+<td><span class="type-badge text">Texte long</span></td>
+<td class="field-desc">Commentaires ou notes sur le paiement</td>
+</tr>
+<tr>
+<td class="field-name">ID</td>
+<td><span class="type-badge number">Auto-n°</span></td>
+<td class="field-desc">Numéro auto-incrémenté du paiement</td>
+</tr>
+<tr>
+<td class="field-name">Montant_Restant_Du</td>
+<td><span class="type-badge formula">Formule</span></td>
+<td class="field-desc">Montant restant dû</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section">
+<div class="section-title">
+<div class="section-icon icon-blue">📚</div>
+<div>
+<h2>DOCUMENTATION</h2>
+<div class="section-subtitle">5 champs documentés</div>
+</div>
+</div>
+<div class="schema-card">
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="field-name">Name</td>
+<td><span class="type-badge text">Texte</span></td>
+<td class="field-desc">Nom de l'élément de documentation</td>
+</tr>
+<tr>
+<td class="field-name">Description</td>
+<td><span class="type-badge text">Texte long</span></td>
+<td class="field-desc">Description de l'élément de documentation</td>
+</tr>
+<tr>
+<td class="field-name">Lien vers la Doc</td>
+<td><span class="type-badge action">Bouton</span></td>
+<td class="field-desc">Bouton d'accès à la documentation</td>
+</tr>
+<tr>
+<td class="field-name">Documentation_URL</td>
+<td><span class="type-badge action">URL</span></td>
+<td class="field-desc">URL de la documentation</td>
+</tr>
+<tr>
+<td class="field-name">Pièces jointes</td>
+<td><span class="type-badge action">Pièces jointes</span></td>
+<td class="field-desc">Fichiers attachés à la documentation</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<footer>
+<div class="container">
+    Documentation <strong>Néobâti Artisanat</strong> — Projet de soutenance 2026
+  </div>
+</footer>
+</body>
+</html>

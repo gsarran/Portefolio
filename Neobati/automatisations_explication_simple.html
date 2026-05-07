@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Automatisations — Vue Dirigeant · Néobâti Artisanat</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & VARIABLES ── */
+:root {
+  --bg:       #111214;
+  --bg-soft:  #16181D;
+  --card:     #1C1F26;
+  --card-hover:#21252E;
+  --border:   rgba(255,255,255,.07);
+  --border-md:rgba(255,255,255,.12);
+  --border-strong:rgba(255,255,255,.18);
+  --text:     #E8EAED;
+  --muted:    #9AA3AD;
+  --soft:     #5E6670;
+
+  --ocre:     #E8A040;
+  --ocre-dim: rgba(232,160,64,.12);
+  --ocre-mid: rgba(232,160,64,.26);
+  --ocre-glow:rgba(232,160,64,.08);
+
+  --green:    #60D0A0;
+  --green-dim:rgba(96,208,160,.11);
+  --green-mid:rgba(96,208,160,.28);
+
+  --blue:     #5BA3F5;
+  --blue-dim: rgba(91,163,245,.11);
+  --blue-mid: rgba(91,163,245,.28);
+
+  --purple:   #B99CFF;
+  --purple-dim:rgba(185,156,255,.11);
+
+  --r-lg: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background:
+    radial-gradient(ellipse 60% 35% at 15% 0%,   rgba(232,160,64,.13) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 30% at 85% 95%,  rgba(96,208,160,.09) 0%, transparent 100%),
+    #111214;
+  min-height:100vh;
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  font-size:16px;
+  line-height:1.65;
+}
+
+/* ── NAV ── */
+nav {
+  position:sticky; top:0; z-index:50;
+  background:rgba(17,18,20,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner {
+  max-width:1100px; margin:0 auto; padding:.8rem 1.5rem;
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+}
+.nav-brand {
+  font-family:'DM Serif Display',serif;
+  color:var(--ocre); font-size:1.05rem; text-decoration:none;
+}
+.nav-pill {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:var(--ocre-dim); border:1px solid var(--ocre-mid);
+  border-radius:999px; padding:.3rem .9rem;
+  font-size:.78rem; font-weight:800; color:var(--ocre);
+  letter-spacing:.06em; text-transform:uppercase;
+}
+
+/* ── CONTAINER ── */
+.wrap { max-width:1100px; margin:0 auto; padding:0 1.5rem; }
+
+/* ── HERO ── */
+.hero {
+  padding:5rem 0 3.5rem;
+  text-align:center;
+}
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:.5rem;
+  color:var(--ocre); font-size:.78rem; font-weight:900;
+  letter-spacing:.12em; text-transform:uppercase;
+  margin-bottom:1.2rem;
+}
+.hero-eyebrow::before,
+.hero-eyebrow::after { content:""; width:28px; height:1px; background:var(--ocre); opacity:.6; }
+
+.hero h1 {
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2.4rem,5vw,3.8rem);
+  font-weight:400; line-height:1.1;
+  margin-bottom:1.1rem;
+}
+.hero h1 em { color:var(--ocre); font-style:italic; }
+
+.hero-sub {
+  max-width:620px; margin:0 auto 2.8rem;
+  color:var(--muted); font-size:clamp(1rem,2vw,1.1rem);
+  font-weight:300; line-height:1.7;
+}
+
+/* Métriques globales */
+.metrics {
+  display:flex; justify-content:center; gap:1px;
+  background:var(--border);
+  border:1px solid var(--border-md);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+  max-width:720px; margin:0 auto;
+}
+.metric-item {
+  flex:1; padding:1.4rem 1rem;
+  background:var(--card);
+  text-align:center;
+  transition:.2s;
+}
+.metric-item:hover { background:var(--card-hover); }
+.metric-val {
+  font-family:'DM Serif Display',serif;
+  font-size:2.2rem; color:var(--ocre);
+  line-height:1; margin-bottom:.3rem;
+}
+.metric-label { color:var(--muted); font-size:.82rem; font-weight:500; line-height:1.35; }
+
+/* ── SECTION TITRE ── */
+.section-intro {
+  text-align:center;
+  padding:3.5rem 0 2rem;
+}
+.section-intro h2 {
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(1.6rem,3vw,2.2rem); font-weight:400;
+  margin-bottom:.6rem;
+}
+.section-intro p { color:var(--muted); font-size:.98rem; font-weight:300; max-width:540px; margin:0 auto; }
+
+/* ── GRILLE AUTOMATISATIONS ── */
+.auto-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(320px,1fr));
+  gap:1.1rem;
+  padding-bottom:5rem;
+}
+
+/* ── CARTE AUTOMATISATION ── */
+.auto-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1.6rem 1.7rem 1.5rem;
+  display:flex; flex-direction:column; gap:1.1rem;
+  transition:.22s ease;
+  position:relative; overflow:hidden;
+}
+.auto-card::before {
+  content:"";
+  position:absolute; inset:0;
+  border-radius:var(--r-lg);
+  opacity:0; transition:.22s;
+  pointer-events:none;
+}
+.auto-card:hover { transform:translateY(-3px); border-color:var(--border-md); }
+.auto-card:hover::before { opacity:1; }
+
+/* Couleurs accent par carte */
+.auto-card.c-ocre   { --accent:var(--ocre);   --accent-dim:var(--ocre-dim);   --accent-mid:var(--ocre-mid);   }
+.auto-card.c-green  { --accent:var(--green);  --accent-dim:var(--green-dim);  --accent-mid:var(--green-mid);  }
+.auto-card.c-blue   { --accent:var(--blue);   --accent-dim:var(--blue-dim);   --accent-mid:var(--blue-mid);   }
+.auto-card.c-purple { --accent:var(--purple); --accent-dim:var(--purple-dim); --accent-mid:rgba(185,156,255,.28); }
+
+.auto-card:hover { border-color:var(--accent-mid); }
+.auto-card::before { background:radial-gradient(ellipse 70% 50% at 50% 0%, var(--accent-dim), transparent); }
+
+/* En-tête carte */
+.card-head {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:.8rem;
+}
+.card-icon-wrap {
+  width:48px; height:48px; border-radius:14px; flex-shrink:0;
+  background:var(--accent-dim); border:1px solid var(--accent-mid);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem;
+}
+.card-tag {
+  display:inline-flex; align-items:center;
+  background:var(--accent-dim); border:1px solid var(--accent-mid);
+  border-radius:999px; padding:.18rem .65rem;
+  font-size:.72rem; font-weight:900; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--accent);
+}
+.card-title {
+  font-family:'DM Serif Display',serif;
+  font-size:1.15rem; color:var(--text);
+  margin-top:.5rem; line-height:1.2;
+}
+
+/* Avant / Après */
+.av-ap {
+  display:grid; grid-template-columns:1fr 1fr; gap:.6rem;
+}
+.av-box {
+  border-radius:var(--r-sm);
+  padding:.75rem .85rem;
+}
+.av-box.before {
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+}
+.av-box.after {
+  background:var(--accent-dim);
+  border:1px solid var(--accent-mid);
+}
+.av-label {
+  font-size:.68rem; font-weight:900; letter-spacing:.1em;
+  text-transform:uppercase; margin-bottom:.3rem;
+}
+.av-box.before .av-label { color:var(--soft); }
+.av-box.after  .av-label { color:var(--accent); }
+.av-text {
+  font-size:.84rem; line-height:1.45; color:var(--muted);
+}
+.av-box.after .av-text { color:var(--text); }
+
+/* Timeline statique */
+.timeline {
+  display:flex; align-items:center; gap:0;
+  padding:.1rem 0;
+}
+.tl-step {
+  display:flex; flex-direction:column; align-items:center; gap:.3rem;
+  flex:1;
+}
+.tl-dot {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--accent-dim); border:1.5px solid var(--accent-mid);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.85rem; flex-shrink:0;
+}
+.tl-label {
+  font-size:.72rem; font-weight:600; color:var(--muted);
+  text-align:center; line-height:1.3; max-width:80px;
+}
+.tl-arrow {
+  flex-shrink:0;
+  color:var(--accent); font-size:.95rem; opacity:.7;
+  margin:0 2px; padding-bottom:18px;
+}
+
+/* Impact badge */
+.impact-row {
+  display:flex; align-items:center; gap:.6rem;
+  padding:.65rem .85rem;
+  background:var(--accent-dim);
+  border:1px solid var(--accent-mid);
+  border-radius:var(--r-sm);
+}
+.impact-icon { font-size:1.1rem; flex-shrink:0; }
+.impact-text { font-size:.84rem; font-weight:600; color:var(--text); line-height:1.35; }
+.impact-text span { color:var(--accent); font-weight:900; }
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--border);
+  padding:2rem 0;
+  text-align:center;
+  color:var(--soft); font-size:.84rem;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .metrics { flex-direction:column; gap:1px; }
+  .av-ap   { grid-template-columns:1fr; }
+  .auto-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-brand" href="index.html">Néobâti Artisanat</a><span class="nav-pill">Automatisations</span></div></nav>
+<main>
+<!-- ── HERO ── -->
+<div class="wrap">
+<section class="hero">
+<div class="hero-eyebrow">Néobâti Artisanat</div>
+<h1>Ce que fait le système<br/><em>sans intervention humaine</em></h1>
+<p class="hero-sub">
+        Une vue synthétique des automatisations mises en place.
+        Chaque processus critique tourne seul — de la réception du client
+        jusqu'à l'encaissement de la facture.
+      </p>
+<div class="metrics">
+<div class="metric-item">
+<div class="metric-val">15+</div>
+<div class="metric-label">Automatisations<br/>actives</div>
+</div>
+<div class="metric-item">
+<div class="metric-val">0</div>
+<div class="metric-label">Relance facture<br/>manuelle</div>
+</div>
+<div class="metric-item">
+<div class="metric-val">24/7</div>
+<div class="metric-label">Disponibilité<br/>du système</div>
+</div>
+<div class="metric-item">
+<div class="metric-val">~8h</div>
+<div class="metric-label">Économisées<br/>par semaine</div>
+</div>
+</div>
+</section>
+<!-- ── SECTION ── -->
+<div class="section-intro">
+<h2>Les 6 automatisations à fort impact</h2>
+<p>Sélectionnées pour leur valeur métier directe — ce que chacune évite, remplace ou accélère.</p>
+</div>
+<!-- ── GRILLE ── -->
+<div class="auto-grid">
+<!-- 1. Nouveau client -->
+<div class="auto-card c-ocre">
+<div class="card-head">
+<div class="card-icon-wrap">🧭</div>
+<div class="card-tag">Prospection</div>
+</div>
+<div class="card-title">Un nouveau client remplit le formulaire — tout se déclenche seul</div>
+<div class="av-ap">
+<div class="av-box before">
+<div class="av-label">Avant</div>
+<div class="av-text">Saisie manuelle dans plusieurs tableaux, email d'alerte oublié, devis créé avec du retard.</div>
+</div>
+<div class="av-box after">
+<div class="av-label">Après</div>
+<div class="av-text">Dossier client créé, devis généré et chargée d'affaires notifiée — en quelques secondes.</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-step">
+<div class="tl-dot">📝</div>
+<div class="tl-label">Formulaire soumis</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">📄</div>
+<div class="tl-label">Devis créé</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">📧</div>
+<div class="tl-label">Chargée notifiée</div>
+</div>
+</div>
+<div class="impact-row">
+<div class="impact-icon">⚡</div>
+<div class="impact-text"><span>Zéro saisie manuelle</span> — le dossier est complet dès la soumission.</div>
+</div>
+</div>
+<!-- 2. Assignation artisans -->
+<div class="auto-card c-green">
+<div class="card-head">
+<div class="card-icon-wrap">👷</div>
+<div class="card-tag">Planification</div>
+</div>
+<div class="card-title">Le bon artisan est trouvé et assigné automatiquement</div>
+<div class="av-ap">
+<div class="av-box before">
+<div class="av-label">Avant</div>
+<div class="av-text">Recherche manuelle dans un fichier, appels téléphoniques, risque d'erreur ou de doublon.</div>
+</div>
+<div class="av-box after">
+<div class="av-label">Après</div>
+<div class="av-text">Le système interroge les disponibilités, sélectionne le profil adapté et notifie la coordinatrice par SMS.</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-step">
+<div class="tl-dot">🏗️</div>
+<div class="tl-label">Chantier créé</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">🔍</div>
+<div class="tl-label">Artisan sélectionné</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">📲</div>
+<div class="tl-label">SMS envoyé</div>
+</div>
+</div>
+<div class="impact-row">
+<div class="impact-icon">⚡</div>
+<div class="impact-text"><span>Réassignation automatique</span> si un artisan devient indisponible en cours de mission.</div>
+</div>
+</div>
+<!-- 3. Géolocalisation -->
+<div class="auto-card c-blue">
+<div class="card-head">
+<div class="card-icon-wrap">📍</div>
+<div class="card-tag">Logistique</div>
+</div>
+<div class="card-title">L'adresse du chantier devient une carte cliquable instantanément</div>
+<div class="av-ap">
+<div class="av-box before">
+<div class="av-label">Avant</div>
+<div class="av-text">Copier-coller de l'adresse dans Google Maps, lien partagé manuellement à chaque artisan.</div>
+</div>
+<div class="av-box after">
+<div class="av-label">Après</div>
+<div class="av-text">Dès la création du chantier, les coordonnées GPS et le lien Maps sont intégrés au dossier.</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-step">
+<div class="tl-dot">🏠</div>
+<div class="tl-label">Adresse saisie</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">🌍</div>
+<div class="tl-label">GPS calculé</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">🗺️</div>
+<div class="tl-label">Lien Maps prêt</div>
+</div>
+</div>
+<div class="impact-row">
+<div class="impact-icon">⚡</div>
+<div class="impact-text"><span>Disponible immédiatement</span> pour tous les intervenants du dossier.</div>
+</div>
+</div>
+<!-- 4. Rapport avancement -->
+<div class="auto-card c-purple">
+<div class="card-head">
+<div class="card-icon-wrap">📊</div>
+<div class="card-tag">Suivi terrain</div>
+</div>
+<div class="card-title">Le rapport d'avancement PDF arrive sans que personne ne le demande</div>
+<div class="av-ap">
+<div class="av-box before">
+<div class="av-label">Avant</div>
+<div class="av-text">Relance téléphonique pour avoir un retour terrain, rapport rédigé à la main, envoi oublié.</div>
+</div>
+<div class="av-box after">
+<div class="av-label">Après</div>
+<div class="av-text">L'artisan remplit un formulaire sur mobile — le rapport PDF est généré et envoyé automatiquement.</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-step">
+<div class="tl-dot">📱</div>
+<div class="tl-label">Formulaire artisan</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">📄</div>
+<div class="tl-label">PDF généré</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">📧</div>
+<div class="tl-label">Email envoyé</div>
+</div>
+</div>
+<div class="impact-row">
+<div class="impact-icon">⚡</div>
+<div class="impact-text"><span>Traçabilité complète</span> de chaque intervention, sans effort administratif.</div>
+</div>
+</div>
+<!-- 5. Facture automatique -->
+<div class="auto-card c-ocre">
+<div class="card-head">
+<div class="card-icon-wrap">🧾</div>
+<div class="card-tag">Facturation</div>
+</div>
+<div class="card-title">La facture est générée et envoyée dès que le chantier est terminé</div>
+<div class="av-ap">
+<div class="av-box before">
+<div class="av-label">Avant</div>
+<div class="av-text">Rédaction manuelle de la facture, délai entre fin de chantier et envoi, oublis fréquents.</div>
+</div>
+<div class="av-box after">
+<div class="av-label">Après</div>
+<div class="av-text">À 100 % d'avancement, la facture PDF est créée par IA, personnalisée et envoyée au client automatiquement.</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-step">
+<div class="tl-dot">✅</div>
+<div class="tl-label">Chantier terminé</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">🤖</div>
+<div class="tl-label">Email rédigé par IA</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">📬</div>
+<div class="tl-label">Facture envoyée</div>
+</div>
+</div>
+<div class="impact-row">
+<div class="impact-icon">⚡</div>
+<div class="impact-text"><span>Délai de facturation réduit à zéro</span> — le client reçoit sa facture le jour même.</div>
+</div>
+</div>
+<!-- 6. Relances impayés -->
+<div class="auto-card c-green">
+<div class="card-head">
+<div class="card-icon-wrap">🔔</div>
+<div class="card-tag">Trésorerie</div>
+</div>
+<div class="card-title">Les relances pour impayés partent seules, au bon moment</div>
+<div class="av-ap">
+<div class="av-box before">
+<div class="av-label">Avant</div>
+<div class="av-text">Suivi manuel des échéances, relances oubliées ou envoyées trop tard, impact sur la trésorerie.</div>
+</div>
+<div class="av-box after">
+<div class="av-label">Après</div>
+<div class="av-text">Deux relances successives générées par IA et envoyées automatiquement — sans aucune intervention.</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-step">
+<div class="tl-dot">📅</div>
+<div class="tl-label">Échéance dépassée</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">✉️</div>
+<div class="tl-label">Relance 1 par IA</div>
+</div>
+<div class="tl-arrow">→</div>
+<div class="tl-step">
+<div class="tl-dot">🔁</div>
+<div class="tl-label">Relance 2 à J+7</div>
+</div>
+</div>
+<div class="impact-row">
+<div class="impact-icon">⚡</div>
+<div class="impact-text"><span>Zéro relance oubliée</span> — la trésorerie est protégée sans effort de suivi.</div>
+</div>
+</div>
+</div><!-- /auto-grid -->
+</div><!-- /wrap -->
+</main>
+<footer>
+<div class="wrap">
+    Documentation <strong>Néobâti Artisanat</strong> — Projet de soutenance 2026
+  </div>
+</footer>
+</body>
+</html>
