@@ -281,10 +281,11 @@ footer {
   .av-ap   { grid-template-columns:1fr; }
   .auto-grid { grid-template-columns:1fr; }
 }
+.nav-links{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}.nav-links a{font-size:.85rem;font-weight:500;color:var(--text2);text-decoration:none;padding:.35rem 1rem;border-radius:100px;border:1px solid transparent;transition:all .2s}.nav-links a:hover,.nav-links a.active{background:var(--ocre-dim);color:var(--ocre);border-color:var(--ocre-mid)}
 </style>
 </head>
 <body>
-<nav><div class="nav-inner"><a class="nav-brand" href="index.html">Néobâti Artisanat</a><div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center"><a class="nav-pill" href="Base_donnees_finale.html" style="opacity:.6">Base de données</a><a class="nav-pill" href="Explication_champs_bd_technicien.html" style="opacity:.6">Vue technique</a><a class="nav-pill" href="automatisations_techniciens.html" style="opacity:.6">Automatisations</a><span class="nav-pill">Vue dirigeant</span><a class="nav-pill" href="interfaces_finales_user.html" style="opacity:.6">Interfaces</a></div></div></nav>
+<nav><div class="nav-inner"><a class="nav-brand" href="index.html">Néobâti Artisanat</a><div class="nav-links"><a href="index.html">Accueil</a><a href="Base_donnees_finale.html">Base</a><a href="Explication_champs_bd_technicien.html">Champs</a><a href="interfaces_finales_user.html">Interfaces</a><a href="automatisations_explication_simple.html" class="active">Automatisations</a><a href="automatisations_techniciens.html">Technique</a></div></div></nav>
 <main>
 <!-- ── HERO ── -->
 <div class="wrap">
