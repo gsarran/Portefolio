@@ -325,13 +325,19 @@ h1 em { color:var(--ocre); font-style:italic; }
 .modal-top {
   flex:0 0 auto; padding:16px var(--modal-padding);
   border-bottom:1px solid var(--border);
-  display:flex; align-items:flex-start; justify-content:space-between; gap:18px;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
   background:rgba(17,18,20,.76); backdrop-filter:blur(16px);
 }
+
+.modal-meta { flex:1 1 auto; min-width:0; }
 
 .modal-kicker { font-size:.78rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--soft); margin-bottom:.25rem; }
 .modal-title  { font-size:clamp(1.05rem,2vw,1.35rem); font-weight:900; }
 .modal-desc   { color:var(--muted); font-size:clamp(.88rem,1.5vw,.95rem); max-width:790px; margin-top:.25rem; }
+
+.modal-actions {
+  display:flex; flex-direction:column; gap:.4rem; flex-shrink:0;
+}
 
 .modal-close {
   width:42px; height:42px; border-radius:999px;
@@ -340,16 +346,9 @@ h1 em { color:var(--ocre); font-style:italic; }
   font-size:1.35rem; cursor:pointer; flex-shrink:0;
 }
 
-.modal-controls {
-  flex:0 0 auto; padding:13px var(--modal-padding);
-  display:flex; justify-content:center; gap:.55rem; flex-wrap:wrap;
-  border-bottom:1px solid var(--border);
-  background:rgba(17,18,20,.62); backdrop-filter:blur(16px);
-}
-
-.workflow-scroll  { flex:1 1 auto; overflow:auto; padding:var(--modal-padding); }
+.workflow-scroll  { flex:1 1 auto; overflow:auto; padding:var(--modal-padding) 0; }
 .workflow-stage   { min-height:100%; display:flex; align-items:center; justify-content:center; }
-.workflow-canvas  { position:relative; width:min(1100px,100%); min-height:640px; margin:auto; }
+.workflow-canvas  { position:relative; width:min(1440px,100%); min-height:640px; margin:auto; }
 
 /* =========================================================
    WORKFLOW STEPS + SVG
@@ -390,7 +389,7 @@ h1 em { color:var(--ocre); font-style:italic; }
 
 .workflow-step.active {
   border-width:4px; transform:translateY(-3px);
-  box-shadow: 0 0 0 1px rgba(232,160,64,.22), 0 0 26px rgba(232,160,64,.18), 0 18px 38px rgba(0,0,0,.32);
+  box-shadow: 0 0 0 1px rgba(232,160,64,.22), 0 0 26px rgba(232,160,64,.08), 0 18px 38px rgba(0,0,0,.32);
 }
 
 .workflow-step.active.airtable { border-color:rgba(91,163,245,.86); }
@@ -416,10 +415,13 @@ h1 em { color:var(--ocre); font-style:italic; }
 }
 
 .path-bg        { fill:none; stroke:rgba(255,255,255,.07); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
-.path-flow      { fill:none; stroke:var(--make);    stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 5px rgba(96,208,160,.65)); }
-.path-flow.airtable-flow { stroke:var(--airtable); filter:drop-shadow(0 0 5px rgba(91,163,245,.65)); }
-.path-flow.ko   { stroke:var(--warning); filter:drop-shadow(0 0 5px rgba(232,184,74,.65)); }
-.path-flow.ok   { stroke:var(--make);   filter:drop-shadow(0 0 5px rgba(96,208,160,.65)); }
+.path-flow      { fill:none; stroke:var(--make);    stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+.path-flow.airtable-flow { stroke:var(--airtable); }
+.path-flow.ko            { stroke:var(--warning); }
+.path-flow.ok            { stroke:var(--make); }
+.path-flow.glowing               { filter:drop-shadow(0 0 5px rgba(96,208,160,.65)); }
+.path-flow.airtable-flow.glowing { filter:drop-shadow(0 0 5px rgba(91,163,245,.65)); }
+.path-flow.ko.glowing            { filter:drop-shadow(0 0 5px rgba(232,184,74,.65)); }
 
 @keyframes cardArrive {
   0%   { box-shadow: 0 0 0 0   var(--arrive-glow-0, rgba(232,160,64,0)),  0 14px 35px rgba(0,0,0,.24); }
@@ -440,8 +442,8 @@ h1 em { color:var(--ocre); font-style:italic; }
   .automation-card .btn { width:100%; padding:1rem; }
   .workflow-canvas { width:100%; min-height:920px; }
   .workflow-step { width:min(310px,90vw); max-width:310px; text-align:center; }  .module-label { margin-left:auto; margin-right:auto; }
-  .modal-controls { justify-content:stretch; }
-  .modal-controls .btn { flex:1 1 160px; }
+  .modal-actions { flex-direction:row; flex-wrap:wrap; }
+  .modal-actions .btn { flex:1 1 auto; }
 }
 
 footer {
@@ -523,14 +525,14 @@ footer {
 <div aria-hidden="true" class="modal" id="workflowModal">
 <div class="modal-shell">
 <header class="modal-top">
-<div>
+<div class="modal-meta">
 <div class="modal-kicker" id="modalKicker"></div>
 <div class="modal-title" id="modalTitle"></div>
 <div class="modal-desc" id="modalDesc"></div>
 </div>
+<div class="modal-actions" id="modalControls"></div>
 <button aria-label="Fermer" class="modal-close" id="modalClose">×</button>
 </header>
-<div class="modal-controls" id="modalControls"></div>
 <div class="workflow-scroll" id="workflowScroll">
 <div class="workflow-stage">
 <div class="workflow-canvas" id="workflowCanvas"></div>
@@ -780,9 +782,11 @@ const modalDesc     = document.getElementById("modalDesc");
 const modalControls = document.getElementById("modalControls");
 const workflowCanvas = document.getElementById("workflowCanvas");
 
-let current = null;
-let pathMap = {};
-let timers  = [];
+let current     = null;
+let pathMap     = {};
+let timers      = [];
+let isPaused    = false;
+let currentMode = "default";
 
 /* =========================================================
    RENDU LISTES
@@ -855,8 +859,9 @@ function openModal(id) {
   if (!item) return;
 
   clearTimers();
-  current = item;
-  pathMap = {};
+  current     = item;
+  pathMap     = {};
+  isPaused    = false;
 
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -892,8 +897,49 @@ modalClose.addEventListener("click", closeModal);
 modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
 document.addEventListener("keydown", event => { if (event.key === "Escape" && modal.classList.contains("is-open")) closeModal(); });
 
-function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-function setTimer(fn, delay) { const t = setTimeout(fn, delay); timers.push(t); }
+function clearTimers() {
+  timers.forEach(t => clearTimeout(t.id));
+  timers = [];
+}
+
+function setTimer(fn, delay) {
+  const fireAt = Date.now() + delay;
+  const meta   = { fn, fireAt, id: null };
+  meta.id = setTimeout(() => {
+    timers = timers.filter(t => t !== meta);
+    fn();
+  }, delay);
+  timers.push(meta);
+}
+
+function pauseWorkflow() {
+  if (isPaused) return;
+  isPaused = true;
+  const now = Date.now();
+  const remaining = timers.map(t => ({ fn: t.fn, delay: Math.max(10, t.fireAt - now) }));
+  timers.forEach(t => clearTimeout(t.id));
+  timers = remaining;
+  updatePauseBtn();
+}
+
+function resumeWorkflow() {
+  if (!isPaused) return;
+  isPaused = false;
+  const pending = timers.splice(0);
+  pending.forEach(({ fn, delay }) => setTimer(fn, delay));
+  updatePauseBtn();
+}
+
+function togglePause() {
+  if (isPaused) resumeWorkflow(); else pauseWorkflow();
+}
+
+function updatePauseBtn() {
+  const btn = document.getElementById("pauseBtn");
+  if (!btn) return;
+  btn.textContent = isPaused ? "▶ Reprendre" : "⏸ Pause";
+  btn.classList.toggle("active", isPaused);
+}
 
 /* =========================================================
    WORKFLOW RENDER
@@ -906,9 +952,13 @@ function renderWorkflow(item) {
     modalControls.innerHTML = `
       <button class="btn btn-neutral active make" data-run="ok">${item.branches.ok.label}</button>
       <button class="btn btn-neutral warning"     data-run="ko">${item.branches.ko.label}</button>
+      <button class="btn btn-neutral" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
     `;
   } else {
-    modalControls.innerHTML = `<button class="btn btn-neutral active ${family}" data-run="default">Relancer l'automatisation</button>`;
+    modalControls.innerHTML = `
+      <button class="btn btn-neutral active ${family}" data-run="default">Relancer l'automatisation</button>
+      <button class="btn btn-neutral" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+    `;
   }
 
   modalControls.querySelectorAll("[data-run]").forEach(btn => {
@@ -1113,7 +1163,7 @@ function drawAllPaths() {
     item.bg.setAttribute("d",   result.d);
     item.path.setAttribute("d", result.d);
     const len = item.path.getTotalLength();
-    const dur = Math.round(300 + len * 0.55);
+    const dur = Math.max(480, Math.round(300 + len * 0.55));
     item.path.style.transition       = "none";
     item.path.style.strokeDasharray  = `${len}`;
     item.path.style.strokeDashoffset = `${len}`;
@@ -1164,8 +1214,11 @@ function makePath(from, to, mode) {
   return { d: `M ${start.x} ${start.y} L ${start.x} ${midY} L ${end.x} ${midY} L ${end.x} ${end.y}` };
 }
 
+let resizeTimer = null;
 window.addEventListener("resize", () => {
-  if (modal.classList.contains("is-open")) requestAnimationFrame(() => drawAllPaths());
+  if (!modal.classList.contains("is-open")) return;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => requestAnimationFrame(() => drawAllPaths()), 100);
 });
 
 /* =========================================================
@@ -1177,6 +1230,7 @@ function resetWorkflow() {
     step.classList.remove("active", "done", "arriving");
   });
   Object.values(pathMap).forEach(item => {
+    item.path.classList.remove("glowing");
     item.path.style.transition       = "none";
     item.path.style.strokeDashoffset = `${item._len || 9999}`;
   });
@@ -1227,11 +1281,11 @@ function activatePath(key) {
   const len = item._len || 0;
   const dur = item._dur || 500;
 
-  /* Détecte la couleur active pour le flash d'arrivée */
-  const isKo        = item.path.classList.contains("ko");
-  const isAirtable  = item.path.classList.contains("airtable-flow");
-  const arriveColor = isAirtable ? "rgba(91,163,245," : isKo ? "rgba(232,184,74," : "rgba(96,208,160,";
+  const isKo      = item.path.classList.contains("ko");
+  const isAirtable = item.path.classList.contains("airtable-flow");
+  const baseColor  = isAirtable ? "rgba(91,163,245," : isKo ? "rgba(232,184,74," : "rgba(96,208,160,";
 
+  item.path.classList.add("glowing");
   item.path.style.transition       = "none";
   item.path.style.strokeDasharray  = `${len}`;
   item.path.style.strokeDashoffset = `${len}`;
@@ -1242,12 +1296,13 @@ function activatePath(key) {
       setTimer(() => {
         const targetEl = workflowCanvas.querySelector(`[data-step="${item.to}"]`);
         if (!targetEl) return;
+        targetEl.style.setProperty("--arrive-glow-0", baseColor + "0)");
+        targetEl.style.setProperty("--arrive-glow-1", baseColor + ".55)");
+        targetEl.style.setProperty("--arrive-glow-2", baseColor + ".30)");
         targetEl.classList.remove("arriving");
         void targetEl.offsetWidth;
         targetEl.classList.add("arriving");
-        /* Flash couleur selon mode */
-        targetEl.style.setProperty("--arrive-color", arriveColor);
-        setTimeout(() => targetEl.classList.remove("arriving"), 420);
+        setTimer(() => targetEl.classList.remove("arriving"), 420);
       }, dur);
     });
   });
@@ -1255,11 +1310,14 @@ function activatePath(key) {
 
 function runWorkflow(mode = "default") {
   if (!current) return;
+  isPaused    = false;
+  currentMode = mode;
   clearTimers();
   resetWorkflow();
   drawAllPaths();
   if (current.layout === "router") runRouter(mode);
   else                             runLinear();
+  updatePauseBtn();
 }
 
 function pathDuration(key) {
@@ -1267,24 +1325,32 @@ function pathDuration(key) {
   return item ? (item._dur || 500) : 500;
 }
 
+function stepPace(count, isRouter = false) {
+  if (count <= 4) return 700;
+  if (count <= 7) return isRouter ? 650 : 550;
+  return isRouter ? 550 : 400;
+}
+
 function runLinear() {
   const count = current.steps.length;
+  const pace  = stepPace(count);
   let cursor  = 0;
   activateStep(0);
   for (let i = 0; i < count - 1; i++) {
     const pathKey    = `p${i}`;
-    const activateAt = cursor + 700;
+    const activateAt = cursor + pace;
     setTimer(() => activatePath(pathKey), activateAt);
     setTimer(() => completeStep(i),       activateAt + 150);
     const dur  = pathDuration(pathKey);
     cursor     = activateAt + dur;
     setTimer(() => activateStep(i + 1),  cursor);
   }
-  setTimer(() => completeStep(count - 1), cursor + 600);
+  setTimer(() => completeStep(count - 1), cursor + pace);
 }
 
 function runRouter(mode = "ok") {
   const preCount    = current.preSteps.length;
+  const pace        = stepPace(preCount + 3, true);
   const routerIndex = preCount;
   const branch1     = mode === "ko" ? preCount + 2 : preCount + 1;
   const branch2     = mode === "ko" ? preCount + 4 : preCount + 3;
@@ -1294,7 +1360,6 @@ function runRouter(mode = "ok") {
 
   /* ── Recolorie TOUS les chemins selon le mode choisi dès le début ── */
   Object.entries(pathMap).forEach(([key, item]) => {
-    // Ne pas toucher aux canvas Airtable (couleur bleue fixe)
     if (current && current.type === "Airtable") return;
     item.path.classList.remove("ok", "ko");
     item.path.classList.add(modeColor);
@@ -1305,32 +1370,32 @@ function runRouter(mode = "ok") {
 
   for (let i = 0; i < preCount - 1; i++) {
     const pathKey    = `pre${i}`;
-    const activateAt = cursor + 700;
+    const activateAt = cursor + pace;
     setTimer(() => activatePath(pathKey), activateAt);
     setTimer(() => completeStep(i),       activateAt + 150);
     cursor = activateAt + pathDuration(pathKey);
     setTimer(() => activateStep(i + 1), cursor);
   }
 
-  const toRouterAt = cursor + 700;
+  const toRouterAt = cursor + pace;
   setTimer(() => activatePath("to-router"), toRouterAt);
   setTimer(() => completeStep(preCount - 1), toRouterAt + 150);
   cursor = toRouterAt + pathDuration("to-router");
   setTimer(() => activateStep(routerIndex), cursor);
 
-  const routerAt = cursor + 700;
+  const routerAt = cursor + pace;
   setTimer(() => activatePath(routerPath), routerAt);
   setTimer(() => completeStep(routerIndex), routerAt + 150);
   cursor = routerAt + pathDuration(routerPath);
   setTimer(() => activateStep(branch1), cursor);
 
-  const branch1At = cursor + 700;
+  const branch1At = cursor + pace;
   setTimer(() => activatePath(nextPath), branch1At);
   setTimer(() => completeStep(branch1),  branch1At + 150);
   cursor = branch1At + pathDuration(nextPath);
   setTimer(() => activateStep(branch2), cursor);
 
-  setTimer(() => completeStep(branch2), cursor + 600);
+  setTimer(() => completeStep(branch2), cursor + pace);
 }
 </script>
 </body>
