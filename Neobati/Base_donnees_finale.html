@@ -268,7 +268,6 @@ footer { border-top:1px solid var(--border); padding:2rem 0; font-size:0.85rem; 
 <path class="lnk" d="" id="l-chantiers-artisans"></path>
 <path class="lnk" d="" id="l-chantiers-interventions"></path>
 <path class="lnk" d="" id="l-artisans-interventions"></path>
-<path class="lnk" d="" id="l-chantiers-materiaux"></path>
 <path class="lnk" d="" id="l-chantiers-ligne"></path>
 <path class="lnk" d="" id="l-materiaux-ligne"></path>
 <path class="lnk" d="" id="l-materiaux-fournisseurs"></path>
@@ -282,7 +281,7 @@ footer { border-top:1px solid var(--border); padding:2rem 0; font-size:0.85rem; 
 <div class="node n-devis" data-id="devis" data-links="l-clients-devis l-contact-devis l-chantiers-devis" id="node-devis" style="left:240px;top:60px">
 <span class="node-icon">📄</span><span class="node-title">Devis</span>
 </div>
-<div class="node n-chantiers" data-id="chantiers" data-links="l-clients-chantiers l-chantiers-devis l-chantiers-factures l-chantiers-artisans l-chantiers-interventions l-chantiers-materiaux l-chantiers-ligne" id="node-chantiers" style="left:240px;top:220px">
+<div class="node n-chantiers" data-id="chantiers" data-links="l-clients-chantiers l-chantiers-devis l-chantiers-factures l-chantiers-artisans l-chantiers-interventions l-chantiers-ligne" id="node-chantiers" style="left:240px;top:220px">
 <span class="badge-central">Table centrale</span>
 <div class="node-row"><span class="node-icon">🏗️</span><span class="node-title">Chantiers</span></div>
 </div>
@@ -298,7 +297,7 @@ footer { border-top:1px solid var(--border); padding:2rem 0; font-size:0.85rem; 
 <div class="node n-interventions" data-id="interventions" data-links="l-chantiers-interventions l-artisans-interventions" id="node-interventions" style="left:500px;top:390px">
 <span class="node-icon">📋</span><span class="node-title">Interventions</span>
 </div>
-<div class="node n-materiaux" data-id="materiaux" data-links="l-chantiers-materiaux l-materiaux-ligne l-materiaux-fournisseurs" id="node-materiaux" style="left:740px;top:130px">
+<div class="node n-materiaux" data-id="materiaux" data-links="l-materiaux-ligne l-materiaux-fournisseurs" id="node-materiaux" style="left:740px;top:130px">
 <span class="node-icon">📦</span><span class="node-title">Matériaux</span>
 </div>
 <div class="node n-ligne" data-id="ligne" data-links="l-chantiers-ligne l-materiaux-ligne" id="node-ligne" style="left:740px;top:390px">
@@ -361,7 +360,6 @@ const CONN = [
   { id:'l-chantiers-artisans',      from:'node-chantiers', fb:'r', to:'node-artisans',     tb:'l', s:'H-V-H', off:0.4 },
   { id:'l-chantiers-interventions', from:'node-chantiers', fb:'r', to:'node-interventions',tb:'l', s:'H-V-H', off:0.4 },
   { id:'l-artisans-interventions',  from:'node-artisans',  fb:'b', to:'node-interventions',tb:'t', s:'V'     },
-  { id:'l-chantiers-materiaux',     from:'node-chantiers', fb:'r', to:'node-materiaux',   tb:'l', s:'H-V-H', off:0.5 },
   { id:'l-chantiers-ligne',         from:'node-chantiers', fb:'r', to:'node-ligne',       tb:'l', s:'H-V-H', off:0.5 },
   { id:'l-materiaux-ligne',         from:'node-materiaux', fb:'b', to:'node-ligne',       tb:'t', s:'V'     },
   { id:'l-materiaux-fournisseurs',  from:'node-materiaux', fb:'r', to:'node-fournisseurs',tb:'t', s:'H-V'   },
@@ -384,13 +382,13 @@ requestAnimationFrame(updatePaths);
 const REL = {
   clients:       { color:'#5BA3F5', links:['l-clients-devis','l-clients-chantiers','l-clients-factures'] },
   contact:       { color:'#B07FE8', links:['l-contact-devis','l-contact-factures'] },
-  chantiers:     { color:'#F0A030', links:['l-clients-chantiers','l-chantiers-devis','l-chantiers-factures','l-chantiers-artisans','l-chantiers-interventions','l-chantiers-materiaux','l-chantiers-ligne'] },
+  chantiers:     { color:'#F0A030', links:['l-clients-chantiers','l-chantiers-devis','l-chantiers-factures','l-chantiers-artisans','l-chantiers-interventions','l-chantiers-ligne'] },
   artisans:      { color:'#F064A0', links:['l-chantiers-artisans','l-artisans-interventions'] },
   interventions: { color:'#38C9C0', links:['l-chantiers-interventions','l-artisans-interventions'] },
   devis:         { color:'#D8D8D8', links:['l-clients-devis','l-contact-devis','l-chantiers-devis'] },
   factures:      { color:'#F07840', links:['l-clients-factures','l-contact-factures','l-chantiers-factures','l-factures-paiements'] },
   paiements:     { color:'#60D490', links:['l-factures-paiements'] },
-  materiaux:     { color:'#E86070', links:['l-chantiers-materiaux','l-materiaux-ligne','l-materiaux-fournisseurs'] },
+  materiaux:     { color:'#E86070', links:['l-materiaux-ligne','l-materiaux-fournisseurs'] },
   ligne:         { color:'#D4B84A', links:['l-chantiers-ligne','l-materiaux-ligne'] },
   fournisseurs:  { color:'#9B8BE4', links:['l-materiaux-fournisseurs'] }
 };
