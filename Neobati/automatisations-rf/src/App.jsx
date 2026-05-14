@@ -78,7 +78,7 @@ export default function App() {
       {/* ── Navbar ── */}
       <nav className="navbar">
         <div className="nav-inner">
-          <a className="nav-brand" href="../index.html">Néobâti Artisanat</a>
+          <a className="nav-brand" href="../../index.html">Néobâti Artisanat</a>
           <div className="nav-links">
             <a href="../../index.html">Accueil</a>
             <a href="../../automatisations_explication_simple.html">Valeur métier</a>
