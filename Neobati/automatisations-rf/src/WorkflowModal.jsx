@@ -73,7 +73,7 @@ export default function WorkflowModal({ item, onClose }) {
                   {item.branches.ok.label}
                 </button>
                 <button
-                  className={`btn btn-neutral warning${mode === 'ko' ? ' active warning' : ''}`}
+                  className={`btn btn-neutral${mode === 'ko' ? ' active warning' : ''}`}
                   onClick={() => handleModeChange('ko')}
                 >
                   {item.branches.ko.label}

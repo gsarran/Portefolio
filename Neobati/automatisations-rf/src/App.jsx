@@ -81,10 +81,10 @@ export default function App() {
           <a className="nav-brand" href="../../index.html">Néobâti Artisanat</a>
           <div className="nav-links">
             <a href="../../index.html">Accueil</a>
-            <a href="../../automatisations_explication_simple.html">Valeur métier</a>
-            <a href="../../Base_donnees_finale.html">Base</a>
-            <a href="../../Explication_champs_bd_technicien.html">Champs</a>
-            <a href="../../interfaces_finales_user.html">Interfaces</a>
+            <a href="../../valeur_metier.html">Valeur métier</a>
+            <a href="../../base.html">Base</a>
+            <a href="../../champs.html">Champs</a>
+            <a href="../../interfaces.html">Interfaces</a>
             <a href="./index.html" className="active">Automatisations</a>
           </div>
         </div>

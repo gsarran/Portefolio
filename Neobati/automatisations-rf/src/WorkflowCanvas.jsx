@@ -239,7 +239,7 @@ function runRouter(item, mode, edges, setNodes, setEdges, timersRef, setActiveNo
    This component only manages the 2s overview delay
    and the page-based camera follow.
 ────────────────────────────────────────────── */
-function CameraController({ startRef, activeNodeId, nodePositionsRef, totalNodeCount, animDone }) {
+function CameraController({ startRef, activeNodeId, nodePositionsRef, totalNodeCount, animDone, isRouter, preCount }) {
   const { setCenter, fitView } = useReactFlow()
   const startedRef     = useRef(false)
   const overviewRef    = useRef(null)
@@ -292,11 +292,16 @@ function CameraController({ startRef, activeNodeId, nodePositionsRef, totalNodeC
   }, [animDone, fitView])
 
   /* Camera triggered on the LAST card of each window (index 4, 9, 14…)
-     → camera starts gliding to the next page while that card is still animating */
+     → camera starts gliding to the next page while that card is still animating
+     For router workflows: only fire on pre-step nodes (idx < preCount) to avoid
+     branch nodes (ko1/ko2) accidentally triggering the camera. */
   useEffect(() => {
     if (!activeNodeId || totalNodeCount <= 5) return
     const idx = parseInt(activeNodeId, 10)
     if (isNaN(idx)) return
+
+    // Router: skip branch nodes — only pre-steps should trigger page transitions
+    if (isRouter && idx >= preCount) return
 
     // Only fire on the last card of a 5-card window (idx % 5 === 4)
     if (idx % 5 !== 4) return
@@ -407,6 +412,8 @@ export default function WorkflowCanvas({ item, mode = 'default', isPaused }) {
           nodePositionsRef={nodePositionsRef}
           totalNodeCount={totalNodeCount}
           animDone={animDone}
+          isRouter={item.layout === 'router'}
+          preCount={item.layout === 'router' ? item.preSteps.length : 0}
         />
       </ReactFlow>
     </div>
