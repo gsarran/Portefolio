@@ -1,0 +1,255 @@
+/* ── Design tokens ── */
+:root {
+  --bg: #111214;
+  --bg-soft: #191C20;
+  --card: #1E2228;
+  --border: rgba(255,255,255,.08);
+  --border-strong: rgba(255,255,255,.16);
+  --text: #E8EAED;
+  --muted: #A0A8B0;
+  --soft: #68717B;
+
+  --ocre: #E8A040;
+  --ocre-dim: rgba(232,160,64,.13);
+  --ocre-mid: rgba(232,160,64,.28);
+
+  --airtable: #5BA3F5;
+  --airtable-soft: rgba(91,163,245,.13);
+  --airtable-border: rgba(91,163,245,.34);
+
+  --make: #60D0A0;
+  --make-soft: rgba(96,208,160,.12);
+  --make-border: rgba(96,208,160,.32);
+
+  --router: #B99CFF;
+  --router-soft: rgba(185,156,255,.13);
+  --router-border: rgba(185,156,255,.34);
+
+  --warning: #E8B84A;
+  --warning-soft: rgba(232,184,74,.12);
+  --warning-border: rgba(232,184,74,.32);
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  font-size: 16px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.65;
+  background:
+    radial-gradient(ellipse 60% 35% at 15% 0%, rgba(232,160,64,.13) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 30% at 85% 95%, rgba(96,208,160,.09) 0%, transparent 100%),
+    #111214;
+  background-attachment: fixed;
+}
+
+/* ── Navbar ── */
+.navbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(17,18,20,.88);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1160px; margin: 0 auto; padding: .85rem 1.5rem;
+  display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+}
+.nav-brand {
+  font-family: 'DM Serif Display', serif;
+  color: var(--ocre); font-size: 1.1rem; text-decoration: none; white-space: nowrap;
+}
+.nav-links { display: flex; gap: .35rem; flex-wrap: wrap; justify-content: flex-end; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 500;
+  padding: .35rem 1rem; border-radius: 100px; border: 1px solid transparent; transition: all .2s;
+}
+.nav-links a.active, .nav-links a:hover {
+  color: var(--ocre); background: var(--ocre-dim); border-color: var(--ocre-mid);
+}
+
+/* ── Layout ── */
+.container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ── Hero ── */
+.hero { padding: 4.8rem 0 2.8rem; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .55rem;
+  color: var(--ocre); font-size: .8rem; font-weight: 800;
+  letter-spacing: .11em; text-transform: uppercase; margin-bottom: 1.1rem;
+}
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--ocre); }
+h1, h2, h3 { font-family: 'DM Serif Display', serif; font-weight: 400; line-height: 1.12; }
+h1 { font-size: clamp(2.4rem,5vw,4rem); margin-bottom: 1rem; }
+h1 em { color: var(--ocre); font-style: italic; }
+.hero-text { max-width: 840px; color: var(--muted); font-size: clamp(1.02rem,2vw,1.12rem); font-weight: 300; }
+
+/* ── Principe cards ── */
+.principe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 3rem; }
+@media(max-width:700px) { .principe-grid { grid-template-columns: 1fr; } }
+.principe-card { padding: 1.4rem 1.6rem; border-radius: var(--radius-lg); border: 1px solid; display: flex; flex-direction: column; gap: .55rem; }
+.principe-card.airtable-card { background: linear-gradient(135deg,rgba(91,163,245,.12),rgba(91,163,245,.04)); border-color: var(--airtable-border); }
+.principe-card.make-card { background: linear-gradient(135deg,rgba(96,208,160,.12),rgba(96,208,160,.04)); border-color: var(--make-border); }
+.principe-card-header { display: flex; align-items: center; gap: .7rem; }
+.principe-logo { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.airtable-card .principe-logo { background: var(--airtable-soft); }
+.make-card .principe-logo { background: var(--make-soft); }
+.principe-card-title { font-family: 'DM Serif Display', serif; font-size: 1.15rem; font-weight: 400; }
+.airtable-card .principe-card-title { color: var(--airtable); }
+.make-card .principe-card-title { color: var(--make); }
+.principe-card-desc { color: var(--muted); font-size: .92rem; line-height: 1.6; font-weight: 300; }
+
+/* ── Sections ── */
+.section { margin-bottom: 3.5rem; }
+.section-header { display: flex; align-items: center; gap: .9rem; padding-bottom: .9rem; margin-bottom: 1.15rem; border-bottom: 1px solid var(--border); }
+.section-icon { width: 40px; height: 40px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: var(--ocre-dim); }
+.section-icon.make { background: var(--make-soft); }
+.section-icon.airtable { background: var(--airtable-soft); }
+.section-title h2 { font-size: 1.45rem; }
+.section-subtitle { color: var(--soft); font-size: .88rem; margin-top: .1rem; }
+.group-title {
+  display: inline-flex; align-items: center; gap: .5rem; padding: .28rem .85rem; border-radius: 999px;
+  background: linear-gradient(135deg,rgba(91,163,245,.18),rgba(91,163,245,.07)); border: 1px solid rgba(91,163,245,.38);
+  color: var(--airtable); font-size: .76rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; margin: 2.8rem 0 .85rem;
+}
+.group-title:first-child { margin-top: 0; }
+.group-title::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--airtable); opacity: .75; }
+.group-title.make-group { background: linear-gradient(135deg,rgba(96,208,160,.18),rgba(96,208,160,.07)); border-color: rgba(96,208,160,.38); color: var(--make); }
+.group-title.make-group::before { background: var(--make); }
+
+/* ── Automation cards ── */
+.automation-grid { display: grid; gap: .95rem; }
+.automation-card { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 1rem; padding: 1.15rem; background: rgba(25,28,32,.84); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 18px 50px rgba(0,0,0,.22); transition: .2s ease; }
+.automation-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.automation-index { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+.automation-index.airtable { color: var(--airtable); background: var(--airtable-soft); border: 1px solid var(--airtable-border); }
+.automation-index.make { color: var(--make); background: var(--make-soft); border: 1px solid var(--make-border); }
+.automation-title { font-size: 1.02rem; font-weight: 800; margin-bottom: .25rem; }
+.automation-desc { color: var(--muted); font-size: clamp(.88rem,1.5vw,.95rem); line-height: 1.6; }
+.automation-meta { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .75rem; }
+
+/* ── Badges & buttons ── */
+.badge { display: inline-flex; align-items: center; border-radius: 999px; padding: .18rem .55rem; font-size: .75rem; font-weight: 900; border: 1px solid var(--border); }
+.badge-airtable { color: var(--airtable); background: var(--airtable-soft); border-color: var(--airtable-border); }
+.badge-make { color: var(--make); background: var(--make-soft); border-color: var(--make-border); }
+.badge-router { color: var(--router); background: var(--router-soft); border-color: var(--router-border); }
+.badge-warning { color: var(--warning); background: var(--warning-soft); border-color: var(--warning-border); }
+.btn { border-radius: 999px; border: 1px solid var(--border); min-height: 44px; padding: .7rem 1rem; font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 900; cursor: pointer; white-space: nowrap; transition: .2s ease; background: transparent; }
+.btn:hover { transform: translateY(-1px); }
+.btn-airtable { color: var(--airtable); background: var(--airtable-soft); border-color: var(--airtable-border); }
+.btn-make { color: var(--make); background: var(--make-soft); border-color: var(--make-border); }
+.btn-neutral { color: var(--muted); background: rgba(255,255,255,.035); border-color: var(--border); }
+.btn-neutral.active.airtable { color: var(--airtable); background: var(--airtable-soft); border-color: var(--airtable-border); }
+.btn-neutral.active.make { color: var(--make); background: var(--make-soft); border-color: var(--make-border); }
+.btn-neutral.warning { color: var(--warning); background: var(--warning-soft); border-color: var(--warning-border); }
+.btn-neutral.active.warning { color: var(--warning); background: var(--warning-soft); border-color: var(--warning-border); }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 999;
+  background:
+    radial-gradient(circle at 15% 8%, rgba(232,160,64,.14), transparent 32%),
+    radial-gradient(circle at 90% 85%, rgba(96,208,160,.12), transparent 30%),
+    rgba(17,18,20,.98);
+  display: flex; animation: fadeIn .22s ease both;
+}
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-shell { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+.modal-top {
+  flex: 0 0 auto; padding: 16px clamp(14px,2vw,26px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  background: rgba(17,18,20,.76); backdrop-filter: blur(16px);
+}
+.modal-meta { flex: 1 1 auto; min-width: 0; }
+.modal-kicker { font-size: .78rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); margin-bottom: .25rem; }
+.modal-title { font-size: clamp(1.05rem,2vw,1.35rem); font-weight: 900; }
+.modal-desc { color: var(--muted); font-size: clamp(.88rem,1.5vw,.95rem); max-width: 790px; margin-top: .25rem; }
+.modal-actions { display: flex; flex-direction: column; gap: .4rem; flex-shrink: 0; }
+.modal-close { width: 42px; height: 42px; border-radius: 999px; border: 1px solid var(--border-strong); background: rgba(255,255,255,.04); color: var(--text); font-size: 1.35rem; cursor: pointer; flex-shrink: 0; }
+
+/* ── React Flow canvas ── */
+/* flex: 1 1 0 + min-height: 0 → required for React Flow to get a non-zero height
+   in a flex-column parent. Without min-height: 0, the browser ignores flex-shrink
+   and the container collapses, making fitView and handle positions fail. */
+.rf-wrapper { flex: 1 1 0; min-height: 0; overflow: hidden; }
+.react-flow { background: transparent !important; }
+.react-flow__background { opacity: 1; }
+.react-flow__pane { cursor: grab; }
+.react-flow__pane:active { cursor: grabbing; }
+
+/* Hide handles visually (nodes non-interactifs) */
+.react-flow__handle { opacity: 0 !important; pointer-events: none !important; width: 1px !important; height: 1px !important; min-width: unset !important; min-height: unset !important; }
+
+/* Remove default node styles */
+.react-flow__node { background: none !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; }
+.react-flow__node.selected { box-shadow: none !important; }
+
+/* ── Workflow Node (custom) ── */
+.wf-node {
+  width: 220px;
+  background: linear-gradient(180deg, rgba(30,34,40,.98), rgba(25,28,32,.98));
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 14px 35px rgba(0,0,0,.24);
+  transition: border-color .28s ease, transform .28s ease, box-shadow .28s ease;
+  position: relative;
+  cursor: default;
+}
+.wf-node.airtable { border-color: rgba(91,163,245,.22); }
+.wf-node.make     { border-color: rgba(96,208,160,.22); }
+.wf-node.router   { border-color: var(--router-border); }
+
+.wf-node.active {
+  border-width: 2px;
+  /* No transform: keeping the node at its layout position ensures
+     React Flow edges stay straight (transform would visually shift
+     the node away from the edge's computed connection point). */
+  box-shadow: 0 0 0 1px rgba(232,160,64,.22), 0 0 26px rgba(232,160,64,.08), 0 18px 38px rgba(0,0,0,.32);
+}
+.wf-node.airtable.active { border-color: rgba(91,163,245,.86); }
+.wf-node.make.active     { border-color: rgba(96,208,160,.86); }
+.wf-node.router.active   { border-color: rgba(185,156,255,.88); }
+.wf-node.done { border-width: 2px; border-color: rgba(96,208,160,.72); transform: none; }
+
+.wf-branch-label {
+  position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+  white-space: nowrap; font-size: .74rem; font-weight: 900;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: rgba(17,18,20,.94);
+}
+.wf-branch-label.ok   { color: var(--make);    border-color: var(--make-border); }
+.wf-branch-label.ko   { color: var(--warning); border-color: var(--warning-border); }
+
+.wf-module-label {
+  display: inline-flex; align-items: center; width: fit-content;
+  margin-bottom: .45rem; padding: .14rem .48rem;
+  border-radius: 999px; font-size: .72rem; font-weight: 1000;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.wf-module-label.airtable { color: var(--airtable); background: var(--airtable-soft); border: 1px solid var(--airtable-border); }
+.wf-module-label.make     { color: var(--make);     background: var(--make-soft);     border: 1px solid var(--make-border); }
+.wf-module-label.router   { color: var(--router);   background: var(--router-soft);   border: 1px solid var(--router-border); }
+.wf-module-label.warning  { color: var(--warning);  background: var(--warning-soft);  border: 1px solid var(--warning-border); }
+
+.wf-step-icon  { font-size: 1.22rem; margin-bottom: .3rem; }
+.wf-step-title { color: var(--text); font-size: .95rem; font-weight: 900; line-height: 1.24; }
+.wf-step-desc  { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-top: .35rem; }
+
+/* ── Footer ── */
+footer { border-top: 1px solid var(--border); padding: 2rem 0; margin-top: 4rem; text-align: center; color: var(--soft); font-size: .85rem; }
+
+/* ── Responsive ── */
+@media(max-width:900px) {
+  .nav-inner { flex-direction: column; align-items: flex-start; }
+  .automation-card { grid-template-columns: 1fr; }
+  .automation-card .btn { width: 100%; padding: 1rem; }
+  .modal-actions { flex-direction: row; flex-wrap: wrap; }
+  .modal-actions .btn { flex: 1 1 auto; }
+}
